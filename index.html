@@ -36,209 +36,6 @@
         }
     </script>
 
-    <!-- Supabase -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-    <script>
-      const { createClient } = supabase;
-      const supabaseUrl = 'https://reizivfwohfzzuxkrbcr.supabase.co';
-      const supabaseKey = 'sb_publishable_8y1FZpS8O2oZptMj8OjW-A_LnxmGRWF';
-      const _supabase = createClient(supabaseUrl, supabaseKey);
-
-      async function fetchColleges() {
-        const { data, error } = await _supabase
-          .from('colleges')
-          .select('*');
-      
-        if (error) {
-          console.error('Error fetching data:', error);
-        } else {
-          console.log('Connected successfully! Colleges:', data);
-        }
-      }
-
-      fetchColleges();
-
-    </script>
-
-    <script>
-    // Ensure your HTML <select> elements have these corresponding IDs
-    const collegeSelect = document.getElementById('college-select');
-    const courseSelect = document.getElementById('course-select');
-    const yearSelect = document.getElementById('year-select');
-
-    // 1. Fetch and populate Colleges on page load
-    async function loadColleges() {
-        const { data, error } = await _supabase.from('colleges').select('*');
-        if (error) console.error('Error fetching colleges:', error);
-        
-        if (data) {
-        data.forEach(college => {
-            const option = document.createElement('option');
-            option.value = college.id;
-            option.textContent = college.name;
-            collegeSelect.appendChild(option);
-        });
-        }
-    }
-
-    // 2. Listen for College selection to fetch specific Courses
-    collegeSelect.addEventListener('change', async (e) => {
-        const collegeId = e.target.value;
-        
-        // Reset child dropdowns
-        courseSelect.innerHTML = '<option value="">Select Course</option>';
-        courseSelect.disabled = true;
-        yearSelect.innerHTML = '<option value="">Select Year</option>';
-        yearSelect.disabled = true;
-
-        if (collegeId) {
-        const { data, error } = await _supabase
-            .from('courses')
-            .select('*')
-            .eq('college_id', collegeId); // Relational filtering
-            
-        if (data && data.length > 0) {
-            data.forEach(course => {
-            const option = document.createElement('option');
-            option.value = course.id;
-            option.textContent = course.name;
-            courseSelect.appendChild(option);
-            });
-            courseSelect.disabled = false;
-        }
-        }
-    });
-
-    // Initialize the first dropdown
-    loadColleges();
-    </script>
-
-    <script>
-    // Ensure these IDs match your HTML <select> elements
-    const semesterSelect = document.getElementById('semester-select');
-    const sectionSelect = document.getElementById('section-select');
-
-    // 3. Listen for Course selection to fetch specific Years
-    courseSelect.addEventListener('change', async (e) => {
-        const courseId = e.target.value;
-        
-        // Reset all downstream dropdowns
-        yearSelect.innerHTML = '<option value="">Select Year</option>';
-        yearSelect.disabled = true;
-        semesterSelect.innerHTML = '<option value="">Select Semester</option>';
-        semesterSelect.disabled = true;
-        sectionSelect.innerHTML = '<option value="">Select Section</option>';
-        sectionSelect.disabled = true;
-
-        if (courseId) {
-        const { data, error } = await _supabase
-            .from('years')
-            .select('*')
-            .eq('course_id', courseId);
-            
-        if (data && data.length > 0) {
-            data.forEach(year => {
-            const option = document.createElement('option');
-            option.value = year.id;
-            option.textContent = year.name;
-            yearSelect.appendChild(option);
-            });
-            yearSelect.disabled = false;
-        }
-        }
-    });
-
-    // 4. Listen for Year selection to fetch specific Semesters
-    yearSelect.addEventListener('change', async (e) => {
-        const yearId = e.target.value;
-        
-        semesterSelect.innerHTML = '<option value="">Select Semester</option>';
-        semesterSelect.disabled = true;
-        sectionSelect.innerHTML = '<option value="">Select Section</option>';
-        sectionSelect.disabled = true;
-
-        if (yearId) {
-        const { data, error } = await _supabase
-            .from('semesters')
-            .select('*')
-            .eq('year_id', yearId);
-            
-        if (data && data.length > 0) {
-            data.forEach(sem => {
-            const option = document.createElement('option');
-            option.value = sem.id;
-            option.textContent = sem.name;
-            semesterSelect.appendChild(option);
-            });
-            semesterSelect.disabled = false;
-        }
-        }
-    });
-
-    // 5. Listen for Semester selection to fetch specific Sections
-    semesterSelect.addEventListener('change', async (e) => {
-        const semesterId = e.target.value;
-        
-        sectionSelect.innerHTML = '<option value="">Select Section</option>';
-        sectionSelect.disabled = true;
-
-        if (semesterId) {
-        const { data, error } = await _supabase
-            .from('sections')
-            .select('*')
-            .eq('semester_id', semesterId);
-            
-        if (data && data.length > 0) {
-            data.forEach(sec => {
-            const option = document.createElement('option');
-            option.value = sec.id;
-            option.textContent = sec.name;
-            sectionSelect.appendChild(option);
-            });
-            sectionSelect.disabled = false;
-        }
-        }
-    });
-    
-    const emailInput = document.getElementById('email-input');
-    const passwordInput = document.getElementById('password-input');
-    const authMessage = document.getElementById('auth-message');
-    const logoutBtn = document.getElementById('logout-btn');
-
-    document.getElementById('signup-btn').addEventListener('click', async () => {
-    const { data, error } = await _supabase.auth.signUp({
-        email: emailInput.value,
-        password: passwordInput.value,
-    });
-    if (error) authMessage.textContent = 'Error: ' + error.message;
-    else authMessage.textContent = 'Sign up successful! You can now log in.';
-    });
-
-    document.getElementById('login-btn').addEventListener('click', async () => {
-    const { data, error } = await _supabase.auth.signInWithPassword({
-        email: emailInput.value,
-        password: passwordInput.value,
-    });
-    if (error) authMessage.textContent = 'Error: ' + error.message;
-    else {
-        authMessage.textContent = 'Logged in as: ' + data.user.email;
-        logoutBtn.style.display = 'inline-block';
-    }
-    });
-
-    logoutBtn.addEventListener('click', async () => {
-    const { error } = await _supabase.auth.signOut();
-    if (error) authMessage.textContent = 'Error: ' + error.message;
-    else {
-        authMessage.textContent = 'Logged out successfully.';
-        logoutBtn.style.display = 'none';
-        emailInput.value = '';
-        passwordInput.value = '';
-    }
-    });
-    </script>
-
     <style>
         /* Custom scrollbar for chat */
         .chat-scroll::-webkit-scrollbar {
@@ -251,17 +48,6 @@
     </style>
 </head>
 <body class="bg-background text-slate-800 font-sans h-screen overflow-hidden flex flex-col">
-
-    <!---->
-    <div id="auth-section">
-    <b>Account Access</b><br>
-    <input type="email" id="email-input" placeholder="Email address" required />
-    <input type="password" id="password-input" placeholder="Password" required />
-    <button id="signup-btn">Sign Up</button>
-    <button id="login-btn">Log In</button>
-    <button id="logout-btn" style="display: none;">Log Out</button>
-    <p id="auth-message" style="color: blue;"></p>
-    </div>
 
     <!-- Custom Modal (Replaces alert) -->
     <div id="custom-modal" class="fixed inset-0 bg-slate-900 bg-opacity-50 z-50 hidden flex items-center justify-center backdrop-blur-sm transition-opacity duration-300">
@@ -277,58 +63,59 @@
     <!-- Onboarding Screen -->
     <div id="onboarding-screen" class="absolute inset-0 z-40 bg-background flex items-center justify-center p-4">
         <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md border-t-4 border-primary">
-            <div class="text-center mb-8">
+            <div class="text-center mb-6">
                 <h1 class="text-4xl font-extrabold text-primary mb-2 tracking-tight">OnlyNotes</h1>
-                <p class="text-slate-500 font-medium">Find your community to begin.</p>
+                <p class="text-slate-500 font-medium" id="auth-status-text">Log in to access your community.</p>
             </div>
             
+            <!-- Auth System -->
+            <div id="auth-container" class="space-y-3 mb-6 pb-6 border-b border-slate-200">
+                <input type="email" id="email-input" placeholder="Email address" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-primary outline-none" required />
+                <input type="password" id="password-input" placeholder="Password" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-primary outline-none" required />
+                <div class="flex gap-2 mt-2">
+                    <button id="login-btn" class="flex-1 bg-dark text-white font-bold py-2 rounded-lg hover:bg-primary transition-colors text-sm">Log In</button>
+                    <button id="signup-btn" class="flex-1 bg-slate-200 text-slate-700 font-bold py-2 rounded-lg hover:bg-slate-300 transition-colors text-sm">Sign Up</button>
+                </div>
+                <p id="auth-message" class="text-xs text-center text-primary font-semibold h-4"></p>
+                <button id="logout-btn" class="w-full bg-red-50 text-red-600 font-bold py-2 rounded-lg hover:bg-red-100 transition-colors text-sm hidden">Log Out</button>
+            </div>
+            
+            <!-- Community Selection -->
             <form id="community-form" class="space-y-4">
                 <div>
                     <label class="block text-sm font-semibold text-slate-700 mb-1">College</label>
-                    <select required class="w-full border border-slate-300 rounded-lg p-3 text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-shadow">
+                    <select id="college-select" required class="w-full border border-slate-300 rounded-lg p-3 text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary transition-shadow">
                         <option value="" disabled selected>Select your college</option>
-                        <option value="SMIT">Sikkim Manipal Institute of Technology</option>
-                        <option value="NIT">National Institute of Technology</option>
                     </select>
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-slate-700 mb-1">Course</label>
-                    <select required class="w-full border border-slate-300 rounded-lg p-3 text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-shadow">
+                    <select id="course-select" required disabled class="w-full border border-slate-300 rounded-lg p-3 text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary transition-shadow disabled:bg-slate-100 disabled:text-slate-400">
                         <option value="" disabled selected>Select your course</option>
-                        <option value="BTech CS">B.Tech Computer Science</option>
-                        <option value="BTech IT">B.Tech Information Technology</option>
                     </select>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-semibold text-slate-700 mb-1">Year</label>
-                        <select required class="w-full border border-slate-300 rounded-lg p-3 text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary transition-shadow">
-                            <option value="1">1st Year</option>
-                            <option value="2">2nd Year</option>
-                            <option value="3">3rd Year</option>
-                            <option value="4">4th Year</option>
+                        <select id="year-select" required disabled class="w-full border border-slate-300 rounded-lg p-3 text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary transition-shadow disabled:bg-slate-100 disabled:text-slate-400">
+                            <option value="" disabled selected>Select Year</option>
                         </select>
                     </div>
                     <div>
                         <label class="block text-sm font-semibold text-slate-700 mb-1">Semester</label>
-                        <select required class="w-full border border-slate-300 rounded-lg p-3 text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary transition-shadow">
-                            <option value="1">Sem 1</option>
-                            <option value="2">Sem 2</option>
-                            <option value="3">Sem 3</option>
-                            <option value="4">Sem 4</option>
+                        <select id="semester-select" required disabled class="w-full border border-slate-300 rounded-lg p-3 text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary transition-shadow disabled:bg-slate-100 disabled:text-slate-400">
+                            <option value="" disabled selected>Select Semester</option>
                         </select>
                     </div>
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-slate-700 mb-1">Section</label>
-                    <select required class="w-full border border-slate-300 rounded-lg p-3 text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary transition-shadow">
-                        <option value="A">Section A</option>
-                        <option value="B">Section B</option>
-                        <option value="C">Section C</option>
+                    <select id="section-select" required disabled class="w-full border border-slate-300 rounded-lg p-3 text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary transition-shadow disabled:bg-slate-100 disabled:text-slate-400">
+                        <option value="" disabled selected>Select Section</option>
                     </select>
                 </div>
                 
-                <button type="button" onclick="enterCommunity()" class="w-full bg-primary hover:bg-dark text-white font-bold py-3 px-4 rounded-lg mt-6 shadow-md shadow-blue-500/30 transition-all hover:shadow-lg hover:-translate-y-0.5">
+                <button type="button" onclick="enterCommunity()" class="w-full bg-primary hover:bg-dark text-white font-bold py-3 px-4 rounded-lg mt-6 shadow-md transition-all hover:-translate-y-0.5">
                     Enter Community
                 </button>
             </form>
@@ -657,6 +444,195 @@
             .animate-fade-in { animation: fadeIn 0.3s ease-out forwards; }
         `;
         document.head.appendChild(style);
+
+    </script>
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+      const { createClient } = supabase;
+      const supabaseUrl = 'https://reizivfwohfzzuxkrbcr.supabase.co';
+      const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJlaXppdmZ3b2hmenp1eGtyYmNyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkyOTU3MzksImV4cCI6MjEwNDg3MTczOX0.ZqSsfPxGXEKj4t_cQ49jBYBx37kltDFD-c8PMDrmVzM';
+      const _supabase = createClient(supabaseUrl, supabaseKey);
+    </script>
+
+    <script>
+    // Ensure your HTML <select> elements have these corresponding IDs
+    const collegeSelect = document.getElementById('college-select');
+    const courseSelect = document.getElementById('course-select');
+    const yearSelect = document.getElementById('year-select');
+
+    // 1. Fetch and populate Colleges on page load
+    async function loadColleges() {
+        const { data, error } = await _supabase.from('colleges').select('*');
+        if (error) console.error('Error fetching colleges:', error);
+        
+        if (data) {
+        data.forEach(college => {
+            const option = document.createElement('option');
+            option.value = college.id;
+            option.textContent = college.name;
+            collegeSelect.appendChild(option);
+        });
+        }
+    }
+
+    // 2. Listen for College selection to fetch specific Courses
+    collegeSelect.addEventListener('change', async (e) => {
+        const collegeId = e.target.value;
+        
+        // Reset child dropdowns
+        courseSelect.innerHTML = '<option value="">Select Course</option>';
+        courseSelect.disabled = true;
+        yearSelect.innerHTML = '<option value="">Select Year</option>';
+        yearSelect.disabled = true;
+
+        if (collegeId) {
+        const { data, error } = await _supabase
+            .from('courses')
+            .select('*')
+            .eq('college_id', collegeId); // Relational filtering
+            
+        if (data && data.length > 0) {
+            data.forEach(course => {
+            const option = document.createElement('option');
+            option.value = course.id;
+            option.textContent = course.name;
+            courseSelect.appendChild(option);
+            });
+            courseSelect.disabled = false;
+        }
+        }
+    });
+
+    // Initialize the first dropdown
+    loadColleges();
+    </script>
+
+    <script>
+    // Ensure these IDs match your HTML <select> elements
+    const semesterSelect = document.getElementById('semester-select');
+    const sectionSelect = document.getElementById('section-select');
+
+    // 3. Listen for Course selection to fetch specific Years
+    courseSelect.addEventListener('change', async (e) => {
+        const courseId = e.target.value;
+        
+        // Reset all downstream dropdowns
+        yearSelect.innerHTML = '<option value="">Select Year</option>';
+        yearSelect.disabled = true;
+        semesterSelect.innerHTML = '<option value="">Select Semester</option>';
+        semesterSelect.disabled = true;
+        sectionSelect.innerHTML = '<option value="">Select Section</option>';
+        sectionSelect.disabled = true;
+
+        if (courseId) {
+        const { data, error } = await _supabase
+            .from('years')
+            .select('*')
+            .eq('course_id', courseId);
+            
+        if (data && data.length > 0) {
+            data.forEach(year => {
+            const option = document.createElement('option');
+            option.value = year.id;
+            option.textContent = year.name;
+            yearSelect.appendChild(option);
+            });
+            yearSelect.disabled = false;
+        }
+        }
+    });
+
+    // 4. Listen for Year selection to fetch specific Semesters
+    yearSelect.addEventListener('change', async (e) => {
+        const yearId = e.target.value;
+        
+        semesterSelect.innerHTML = '<option value="">Select Semester</option>';
+        semesterSelect.disabled = true;
+        sectionSelect.innerHTML = '<option value="">Select Section</option>';
+        sectionSelect.disabled = true;
+
+        if (yearId) {
+        const { data, error } = await _supabase
+            .from('semesters')
+            .select('*')
+            .eq('year_id', yearId);
+            
+        if (data && data.length > 0) {
+            data.forEach(sem => {
+            const option = document.createElement('option');
+            option.value = sem.id;
+            option.textContent = sem.name;
+            semesterSelect.appendChild(option);
+            });
+            semesterSelect.disabled = false;
+        }
+        }
+    });
+
+    // 5. Listen for Semester selection to fetch specific Sections
+    semesterSelect.addEventListener('change', async (e) => {
+        const semesterId = e.target.value;
+        
+        sectionSelect.innerHTML = '<option value="">Select Section</option>';
+        sectionSelect.disabled = true;
+
+        if (semesterId) {
+        const { data, error } = await _supabase
+            .from('sections')
+            .select('*')
+            .eq('semester_id', semesterId);
+            
+        if (data && data.length > 0) {
+            data.forEach(sec => {
+            const option = document.createElement('option');
+            option.value = sec.id;
+            option.textContent = sec.name;
+            sectionSelect.appendChild(option);
+            });
+            sectionSelect.disabled = false;
+        }
+        }
+    });
+    
+    const emailInput = document.getElementById('email-input');
+    const passwordInput = document.getElementById('password-input');
+    const authMessage = document.getElementById('auth-message');
+    const logoutBtn = document.getElementById('logout-btn');
+
+    document.getElementById('signup-btn').addEventListener('click', async () => {
+    const { data, error } = await _supabase.auth.signUp({
+        email: emailInput.value,
+        password: passwordInput.value,
+    });
+    if (error) authMessage.textContent = 'Error: ' + error.message;
+    else authMessage.textContent = 'Sign up successful! You can now log in.';
+    });
+
+    document.getElementById('login-btn').addEventListener('click', async () => {
+    const { data, error } = await _supabase.auth.signInWithPassword({
+        email: emailInput.value,
+        password: passwordInput.value,
+    });
+    if (error) authMessage.textContent = 'Error: ' + error.message;
+    else {
+        authMessage.textContent = 'Logged in as: ' + data.user.email;
+        logoutBtn.style.display = 'inline-block';
+    }
+    });
+
+    logoutBtn.addEventListener('click', async () => {
+    const { error } = await _supabase.auth.signOut();
+    if (error) authMessage.textContent = 'Error: ' + error.message;
+    else {
+        authMessage.textContent = 'Logged out successfully.';
+        logoutBtn.style.display = 'none';
+        emailInput.value = '';
+        passwordInput.value = '';
+    }
+    });
     </script>
 </body>
 </html>
