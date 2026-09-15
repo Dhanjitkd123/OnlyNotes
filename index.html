@@ -66,8 +66,8 @@
                     <button id="signup-btn" class="flex-1 bg-slate-200 text-slate-700 font-bold py-2 rounded-lg hover:bg-slate-300 transition-colors text-sm">Sign Up</button>
                 </div>
                 <p id="auth-message" class="text-xs text-center text-primary font-semibold h-4"></p>
-                <button id="logout-btn" class="w-full bg-red-50 text-red-600 font-bold py-2 rounded-lg hover:bg-red-100 transition-colors text-sm hidden">Log Out</button>
             </div>
+            <button id="logout-btn" class="w-full mb-6 bg-red-50 text-red-600 font-bold py-2 rounded-lg hover:bg-red-100 transition-colors text-sm hidden">Log Out</button>
             
             <!-- Community Selection -->
             <form id="community-form" class="space-y-4">
@@ -116,7 +116,7 @@
         
         <!-- Header -->
         <header class="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-10">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between relative">
                 <div class="flex items-center gap-2">
                     <div class="w-8 h-8 bg-primary text-white rounded-lg flex items-center justify-center font-bold text-xl">N</div>
                     <h1 class="text-2xl font-extrabold text-primary tracking-tight">OnlyNotes</h1>
@@ -129,6 +129,7 @@
                         <span id="header-avatar-emoji">🥚</span>
                     </div>
                 </div>
+            </div>
             
             <!-- Navigation -->
             <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex gap-6 overflow-x-auto no-scrollbar">
@@ -187,9 +188,22 @@
                 </div>
 
                 <!-- EXAM ZONE (PYQs) VIEW -->
+                <div id="view-pyq" class="view-section hidden animate-fade-in">
+                    <div class="flex justify-between items-center mb-6">
+                        <div class="flex gap-2 bg-slate-200 p-1 rounded-lg w-max">
+                            <button id="tier-paid-pyq" onclick="setTier('pyq', 'paid')" class="bg-white text-dark font-bold px-4 py-1.5 rounded-md shadow-sm text-sm transition-all">Paid Tier</button>
+                            <button id="tier-free-pyq" onclick="setTier('pyq', 'free')" class="text-slate-600 font-medium px-4 py-1.5 rounded-md text-sm hover:text-slate-900 transition-all">Free Tier</button>
+                        </div>
+                        <button onclick="openUploadModal('pyq')" class="bg-primary hover:bg-dark text-white font-bold px-4 py-2 rounded-lg text-sm shadow-sm transition-all">+ Upload PYQ</button>
+                    </div>
+
+                    <h2 class="text-xl font-bold text-slate-800 mb-4">Exam Zone (Past Papers)</h2>
+                    <div id="pyq-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        <p class="text-slate-500 text-sm">Loading PYQs...</p>
+                    </div>
+                </div>
 
                 <!-- PROFILE VIEW -->
-
                 <div id="view-profile" class="view-section hidden flex-col animate-fade-in pb-10">
                     <div class="max-w-4xl mx-auto w-full bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mt-6">
                         <h2 class="text-2xl font-bold text-slate-800 mb-6 border-b border-slate-100 pb-4">Profile Settings</h2>
@@ -209,9 +223,20 @@
                             <div class="flex-1 space-y-5 w-full">
                                 <div>
                                     <label class="block text-sm font-semibold text-slate-700 mb-1">Username</label>
-                                    <div class="flex gap-2">
-                                        <input type="text" id="profile-username" placeholder="Enter a username..." class="flex-1 border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-primary outline-none">
-                                        <button onclick="saveProfile()" class="bg-primary hover:bg-dark text-white font-bold px-5 py-2.5 rounded-lg text-sm transition-all shadow-sm">Save</button>
+                                    
+                                    <!-- Display Mode -->
+                                    <div id="username-display-mode" class="flex items-center gap-3">
+                                        <span id="profile-username-text" class="text-lg font-bold text-slate-900">N/A</span>
+                                        <button onclick="toggleUsernameEdit(true)" class="text-slate-400 hover:text-primary transition-colors" title="Edit Username">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                                        </button>
+                                    </div>
+                                    
+                                    <!-- Edit Mode (Hidden initially) -->
+                                    <div id="username-edit-mode" class="hidden gap-2">
+                                        <input type="text" id="profile-username-input" placeholder="Enter a username..." class="flex-1 border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-primary outline-none">
+                                        <button onclick="saveProfile()" class="bg-primary hover:bg-dark text-white font-bold px-4 py-2.5 rounded-lg text-sm transition-all shadow-sm">Save</button>
+                                        <button onclick="toggleUsernameEdit(false)" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold px-4 py-2.5 rounded-lg text-sm transition-all shadow-sm">Cancel</button>
                                     </div>
                                 </div>
                                 <div>
@@ -283,40 +308,122 @@
                     </div>
                 </div>
 
-                <div id="view-pyq" class="view-section hidden animate-fade-in">
-                    <div class="flex justify-between items-center mb-6">
-                        <div class="flex gap-2 bg-slate-200 p-1 rounded-lg w-max">
-                            <button id="tier-paid-pyq" onclick="setTier('pyq', 'paid')" class="bg-white text-dark font-bold px-4 py-1.5 rounded-md shadow-sm text-sm transition-all">Paid Tier</button>
-                            <button id="tier-free-pyq" onclick="setTier('pyq', 'free')" class="text-slate-600 font-medium px-4 py-1.5 rounded-md text-sm hover:text-slate-900 transition-all">Free Tier</button>
-                        </div>
-                        <button onclick="openUploadModal('pyq')" class="bg-primary hover:bg-dark text-white font-bold px-4 py-2 rounded-lg text-sm shadow-sm transition-all">+ Upload PYQ</button>
-                    </div>
-
-                    <h2 class="text-xl font-bold text-slate-800 mb-4">Exam Zone (Past Papers)</h2>
-                    <div id="pyq-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                        <p class="text-slate-500 text-sm">Loading PYQs...</p>
-                    </div>
-                </div>
-
             </div>
         </main>
     </div>
 
+    <!-- Supabase Core Script -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // Entry from Onboarding to Dashboard
-        function enterCommunity() {
-            // Basic validation
+      const { createClient } = supabase;
+      const supabaseUrl = 'https://reizivfwohfzzuxkrbcr.supabase.co';
+      const supabaseKey = 'sb_publishable_8y1FZpS8O2oZptMj8OjW-A_LnxmGRWF';
+      const _supabase = createClient(supabaseUrl, supabaseKey);
+    </script>
+
+    <script>
+        // ==========================================
+        // AUTHENTICATION & USERNAME LOGIC
+        // ==========================================
+        const emailInput = document.getElementById('email-input');
+        const passwordInput = document.getElementById('password-input');
+        const authMessage = document.getElementById('auth-message');
+        const logoutBtn = document.getElementById('logout-btn');
+
+        // Centralized function to verify username upon auth
+        async function handleAuthSuccess(user) {
+            try {
+                const { data: profile } = await _supabase.from('profiles').select('username').eq('id', user.id).maybeSingle();
+                let finalName = profile?.username;
+                
+                if (!finalName) {
+                    const chosenName = prompt("Welcome to OnlyNotes! Please set a username to continue:");
+                    if (chosenName && chosenName.trim() !== "") {
+                        finalName = chosenName.trim();
+                        await _supabase.from('profiles').upsert({ id: user.id, username: finalName });
+                    } else {
+                        alert("A username is required to log in.");
+                        await _supabase.auth.signOut();
+                        return;
+                    }
+                }
+                
+                // Successful Auth & Username setup
+                document.getElementById('auth-container').classList.add('hidden');
+                document.getElementById('auth-status-text').textContent = `Logged in as ${finalName}. Select your community below to enter.`;
+                logoutBtn.classList.remove('hidden');
+                logoutBtn.style.display = 'block';
+
+            } catch (err) {
+                console.error("Auth Success Error: ", err);
+            }
+        }
+
+        // Automatic session tracking
+        _supabase.auth.onAuthStateChange(async (event, session) => {
+            if ((event === 'INITIAL_SESSION' || event === 'SIGNED_IN') && session?.user) {
+                await handleAuthSuccess(session.user);
+            } else if (event === 'SIGNED_OUT') {
+                document.getElementById('auth-container').classList.remove('hidden');
+                document.getElementById('auth-status-text').textContent = 'Log in to access your community.';
+                logoutBtn.classList.add('hidden');
+                logoutBtn.style.display = 'none';
+            }
+        });
+
+        document.getElementById('signup-btn').addEventListener('click', async () => {
+            const { data, error } = await _supabase.auth.signUp({
+                email: emailInput.value,
+                password: passwordInput.value,
+            });
+            if (error) authMessage.textContent = 'Error: ' + error.message;
+            else authMessage.textContent = 'Sign up successful!';
+        });
+
+        document.getElementById('login-btn').addEventListener('click', async () => {
+            const { data, error } = await _supabase.auth.signInWithPassword({
+                email: emailInput.value,
+                password: passwordInput.value,
+            });
+            if (error) authMessage.textContent = 'Error: ' + error.message;
+            else authMessage.textContent = 'Login successful!';
+        });
+
+        logoutBtn.addEventListener('click', async () => {
+            const { error } = await _supabase.auth.signOut();
+            if (error) authMessage.textContent = 'Error: ' + error.message;
+            else {
+                authMessage.textContent = 'Logged out successfully.';
+                emailInput.value = '';
+                passwordInput.value = '';
+                // Kick them back to onboarding screen if they logout from inside
+                document.getElementById('dashboard-screen').classList.add('hidden');
+                document.getElementById('dashboard-screen').classList.remove('flex');
+                document.getElementById('onboarding-screen').classList.remove('hidden');
+            }
+        });
+
+        // ==========================================
+        // COMMUNITY ENTRY LOGIC
+        // ==========================================
+        async function enterCommunity() {
             const form = document.getElementById('community-form');
             if(form.checkValidity()) {
+                // Allows guests to enter smoothly
                 document.getElementById('onboarding-screen').classList.add('hidden');
                 document.getElementById('dashboard-screen').classList.remove('hidden');
                 document.getElementById('dashboard-screen').classList.add('flex');
+                
+                // Load profile data in the background (if logged in)
+                loadProfileData();
             } else {
                 form.reportValidity();
             }
         }
 
-        // Tab Switching Logic
+        // ==========================================
+        // UI & TAB LOGIC
+        // ==========================================
         function switchTab(tabId) {
             document.querySelectorAll('.view-section').forEach(el => {
                 el.classList.add('hidden');
@@ -341,23 +448,51 @@
             if(tabId === 'profile') loadProfileData();
         }
 
-        // Profile Functions
+        let currentTiers = { notes: 'paid', lab: 'paid', pyq: 'paid' };
+
+        function setTier(section, tier) {
+            currentTiers[section] = tier;
+            
+            const paidBtn = document.getElementById(`tier-paid-${section}`);
+            const freeBtn = document.getElementById(`tier-free-${section}`);
+            
+            const activeClasses = 'bg-white text-dark font-bold px-4 py-1.5 rounded-md shadow-sm text-sm transition-all';
+            const inactiveClasses = 'text-slate-600 font-medium px-4 py-1.5 rounded-md text-sm hover:text-slate-900 transition-all';
+            
+            if (tier === 'paid') {
+                paidBtn.className = activeClasses;
+                freeBtn.className = inactiveClasses;
+            } else {
+                freeBtn.className = activeClasses;
+                paidBtn.className = inactiveClasses;
+            }
+            
+            fetchMarketplaceData();
+        }
+
+        // ==========================================
+        // PROFILE FUNCTIONS
+        // ==========================================
         async function loadProfileData() {
             const { data: { user } } = await _supabase.auth.getUser();
             if (!user) return;
 
-            const { data: profile } = await _supabase.from('profiles').select('*').eq('id', user.id).single();
+            const { data: profile } = await _supabase.from('profiles').select('*').eq('id', user.id).maybeSingle();
             
             if (profile) {
                 if (profile.username) {
-                    document.getElementById('profile-username').value = profile.username;
-                    document.getElementById('header-username').textContent = profile.username;
+                    const textEl = document.getElementById('profile-username-text');
+                    const inputEl = document.getElementById('profile-username-input');
+                    if (textEl) textEl.textContent = profile.username;
+                    if (inputEl) inputEl.value = profile.username;
                 }
                 if (profile.avatar_url) {
                     updateAvatarVisuals(profile.avatar_url);
                 }
-                document.getElementById('profile-rank').textContent = profile.rank;
-                document.getElementById('profile-exp').textContent = `${profile.exp} / 100 IQ`;
+                const rankEl = document.getElementById('profile-rank');
+                const expEl = document.getElementById('profile-exp');
+                if (rankEl) rankEl.textContent = profile.rank || 'Egg';
+                if (expEl) expEl.textContent = `${profile.exp || 25} / 100 IQ`;
             }
         }
 
@@ -365,7 +500,7 @@
             const { data: { user } } = await _supabase.auth.getUser();
             if (!user) return;
             
-            const newUsername = document.getElementById('profile-username').value;
+            const newUsername = document.getElementById('profile-username-input').value;
             const { error } = await _supabase.from('profiles').upsert({ 
                 id: user.id, 
                 username: newUsername 
@@ -374,7 +509,8 @@
             if (error) alert("Error saving: " + error.message);
             else {
                 handleAction("Success", "Username updated successfully!");
-                document.getElementById('header-username').textContent = newUsername;
+                document.getElementById('profile-username-text').textContent = newUsername;
+                toggleUsernameEdit(false);
             }
         }
 
@@ -400,7 +536,7 @@
             await _supabase.from('profiles').upsert({ id: user.id, avatar_url: publicUrl });
             
             updateAvatarVisuals(publicUrl);
-            closeModal(); // close the uploading notification
+            closeModal(); 
         }
 
         function updateAvatarVisuals(url) {
@@ -409,11 +545,13 @@
             
             imgElements.forEach(id => {
                 const el = document.getElementById(id);
-                el.src = url;
-                el.classList.remove('hidden');
+                if(el) { el.src = url; el.classList.remove('hidden'); }
             });
             
-            placeholderElements.forEach(id => document.getElementById(id).classList.add('hidden'));
+            placeholderElements.forEach(id => {
+                const el = document.getElementById(id);
+                if(el) el.classList.add('hidden');
+            });
         }
 
         async function handleDeleteAccount() {
@@ -426,37 +564,24 @@
             }
         }
 
-        // Track the active tier for each section
-        let currentTiers = {
-            notes: 'paid',
-            lab: 'paid',
-            pyq: 'paid'
-        };
-
-        function setTier(section, tier) {
-            currentTiers[section] = tier;
+        function toggleUsernameEdit(showEdit) {
+            const displayMode = document.getElementById('username-display-mode');
+            const editMode = document.getElementById('username-edit-mode');
             
-            const paidBtn = document.getElementById(`tier-paid-${section}`);
-            const freeBtn = document.getElementById(`tier-free-${section}`);
-            
-            // Active styling classes
-            const activeClasses = 'bg-white text-dark font-bold px-4 py-1.5 rounded-md shadow-sm text-sm transition-all';
-            // Inactive styling classes
-            const inactiveClasses = 'text-slate-600 font-medium px-4 py-1.5 rounded-md text-sm hover:text-slate-900 transition-all';
-            
-            if (tier === 'paid') {
-                paidBtn.className = activeClasses;
-                freeBtn.className = inactiveClasses;
+            if (showEdit) {
+                displayMode.classList.add('hidden');
+                editMode.classList.remove('hidden');
+                editMode.classList.add('flex');
             } else {
-                freeBtn.className = activeClasses;
-                paidBtn.className = inactiveClasses;
+                displayMode.classList.remove('hidden');
+                editMode.classList.add('hidden');
+                editMode.classList.remove('flex');
             }
-            
-            // Re-fetch data whenever a tier is switched
-            fetchMarketplaceData();
         }
 
-        // Custom Modal Logic (Replaces Alert)
+        // ==========================================
+        // UTILS & MODALS
+        // ==========================================
         const modal = document.getElementById('custom-modal');
         const modalContent = document.getElementById('modal-content');
         const modalTitle = document.getElementById('modal-title');
@@ -465,9 +590,7 @@
         function showModal(title, message) {
             modalTitle.textContent = title;
             modalMessage.textContent = message;
-            
             modal.classList.remove('hidden');
-            // Small delay to allow display:block to apply before animating opacity/transform
             setTimeout(() => {
                 modalContent.classList.remove('scale-95');
                 modalContent.classList.add('scale-100');
@@ -479,22 +602,17 @@
             modalContent.classList.add('scale-95');
             setTimeout(() => {
                 modal.classList.add('hidden');
-            }, 300); // Wait for transition
+            }, 300);
         }
 
-        // Generic click handler for mockup buttons
         function handleAction(actionName, message) {
             showModal(actionName, message);
         }
 
-        // Allow closing modal by clicking outside
         modal.addEventListener('click', (e) => {
-            if(e.target === modal) {
-                closeModal();
-            }
+            if(e.target === modal) closeModal();
         });
         
-        // CSS specific for fade in animation added dynamically for tabs
         const style = document.createElement('style');
         style.textContent = `
             @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
@@ -502,343 +620,238 @@
         `;
         document.head.appendChild(style);
 
-    </script>
+        // ==========================================
+        // DATA POPULATION & UPLOADS
+        // ==========================================
+        const collegeSelect = document.getElementById('college-select');
+        const courseSelect = document.getElementById('course-select');
+        const yearSelect = document.getElementById('year-select');
+        const semesterSelect = document.getElementById('semester-select');
+        const sectionSelect = document.getElementById('section-select');
 
-    <!-- Supabase -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+        async function loadColleges() {
+            const { data, error } = await _supabase.from('colleges').select('*');
+            if (data) {
+                data.forEach(college => {
+                    const option = document.createElement('option');
+                    option.value = college.id;
+                    option.textContent = college.name;
+                    collegeSelect.appendChild(option);
+                });
+            }
+        }
 
-    <script>
-      const { createClient } = supabase;
-      const supabaseUrl = 'https://reizivfwohfzzuxkrbcr.supabase.co';
-      const supabaseKey = 'sb_publishable_8y1FZpS8O2oZptMj8OjW-A_LnxmGRWF';
-      const _supabase = createClient(supabaseUrl, supabaseKey);
-    </script>
+        collegeSelect.addEventListener('change', async (e) => {
+            const collegeId = e.target.value;
+            courseSelect.innerHTML = '<option value="">Select Course</option>';
+            courseSelect.disabled = true;
+            yearSelect.innerHTML = '<option value="">Select Year</option>';
+            yearSelect.disabled = true;
 
-    <script>
-    // Ensure your HTML <select> elements have these corresponding IDs
-    const collegeSelect = document.getElementById('college-select');
-    const courseSelect = document.getElementById('course-select');
-    const yearSelect = document.getElementById('year-select');
-
-    // 1. Fetch and populate Colleges on page load
-    async function loadColleges() {
-        const { data, error } = await _supabase.from('colleges').select('*');
-        if (error) console.error('Supabase Code:', error.code, '| Message:', error.message);
-        
-        if (data) {
-        data.forEach(college => {
-            const option = document.createElement('option');
-            option.value = college.id;
-            option.textContent = college.name;
-            collegeSelect.appendChild(option);
+            if (collegeId) {
+                const { data } = await _supabase.from('courses').select('*').eq('college_id', collegeId);
+                if (data && data.length > 0) {
+                    data.forEach(course => {
+                        const option = document.createElement('option');
+                        option.value = course.id;
+                        option.textContent = course.name;
+                        courseSelect.appendChild(option);
+                    });
+                    courseSelect.disabled = false;
+                }
+            }
         });
+
+        courseSelect.addEventListener('change', async (e) => {
+            const courseId = e.target.value;
+            yearSelect.innerHTML = '<option value="">Select Year</option>';
+            yearSelect.disabled = true;
+            semesterSelect.innerHTML = '<option value="">Select Semester</option>';
+            semesterSelect.disabled = true;
+            sectionSelect.innerHTML = '<option value="">Select Section</option>';
+            sectionSelect.disabled = true;
+
+            if (courseId) {
+                const { data } = await _supabase.from('years').select('*').eq('course_id', courseId);
+                if (data && data.length > 0) {
+                    data.forEach(year => {
+                        const option = document.createElement('option');
+                        option.value = year.id;
+                        option.textContent = year.name;
+                        yearSelect.appendChild(option);
+                    });
+                    yearSelect.disabled = false;
+                }
+            }
+        });
+
+        yearSelect.addEventListener('change', async (e) => {
+            const yearId = e.target.value;
+            semesterSelect.innerHTML = '<option value="">Select Semester</option>';
+            semesterSelect.disabled = true;
+            sectionSelect.innerHTML = '<option value="">Select Section</option>';
+            sectionSelect.disabled = true;
+
+            if (yearId) {
+                const { data } = await _supabase.from('semesters').select('*').eq('year_id', yearId);
+                if (data && data.length > 0) {
+                    data.forEach(sem => {
+                        const option = document.createElement('option');
+                        option.value = sem.id;
+                        option.textContent = sem.name;
+                        semesterSelect.appendChild(option);
+                    });
+                    semesterSelect.disabled = false;
+                }
+            }
+        });
+
+        semesterSelect.addEventListener('change', async (e) => {
+            const semesterId = e.target.value;
+            sectionSelect.innerHTML = '<option value="">Select Section</option>';
+            sectionSelect.disabled = true;
+
+            if (semesterId) {
+                const { data } = await _supabase.from('sections').select('*').eq('semester_id', semesterId);
+                if (data && data.length > 0) {
+                    data.forEach(sec => {
+                        const option = document.createElement('option');
+                        option.value = sec.id;
+                        option.textContent = sec.name;
+                        sectionSelect.appendChild(option);
+                    });
+                    sectionSelect.disabled = false;
+                }
+            }
+        });
+
+        loadColleges();
+
+        let currentUploadType = 'note';
+        function openUploadModal(type) {
+            currentUploadType = type;
+            const modalTitle = type === 'note' ? 'Upload Class Note' : type === 'pyq' ? 'Upload PYQ' : 'Upload Lab File';
+            document.getElementById('upload-modal-title').textContent = modalTitle;
+            document.getElementById('upload-modal').classList.remove('hidden');
         }
-    }
 
-    // 2. Listen for College selection to fetch specific Courses
-    collegeSelect.addEventListener('change', async (e) => {
-        const collegeId = e.target.value;
-        
-        // Reset child dropdowns
-        courseSelect.innerHTML = '<option value="">Select Course</option>';
-        courseSelect.disabled = true;
-        yearSelect.innerHTML = '<option value="">Select Year</option>';
-        yearSelect.disabled = true;
-
-        if (collegeId) {
-        const { data, error } = await _supabase
-            .from('courses')
-            .select('*')
-            .eq('college_id', collegeId); // Relational filtering
-            
-        if (data && data.length > 0) {
-            data.forEach(course => {
-            const option = document.createElement('option');
-            option.value = course.id;
-            option.textContent = course.name;
-            courseSelect.appendChild(option);
-            });
-            courseSelect.disabled = false;
+        function closeUploadModal() {
+            document.getElementById('upload-modal').classList.add('hidden');
+            document.getElementById('upload-form').reset();
         }
-        }
-    });
-
-    // Initialize the first dropdown
-    loadColleges();
-    </script>
-
-    <script>
-    // Ensure these IDs match your HTML <select> elements
-    const semesterSelect = document.getElementById('semester-select');
-    const sectionSelect = document.getElementById('section-select');
-
-    // 3. Listen for Course selection to fetch specific Years
-    courseSelect.addEventListener('change', async (e) => {
-        const courseId = e.target.value;
-        
-        // Reset all downstream dropdowns
-        yearSelect.innerHTML = '<option value="">Select Year</option>';
-        yearSelect.disabled = true;
-        semesterSelect.innerHTML = '<option value="">Select Semester</option>';
-        semesterSelect.disabled = true;
-        sectionSelect.innerHTML = '<option value="">Select Section</option>';
-        sectionSelect.disabled = true;
-
-        if (courseId) {
-        const { data, error } = await _supabase
-            .from('years')
-            .select('*')
-            .eq('course_id', courseId);
-            
-        if (data && data.length > 0) {
-            data.forEach(year => {
-            const option = document.createElement('option');
-            option.value = year.id;
-            option.textContent = year.name;
-            yearSelect.appendChild(option);
-            });
-            yearSelect.disabled = false;
-        }
-        }
-    });
-
-    // 4. Listen for Year selection to fetch specific Semesters
-    yearSelect.addEventListener('change', async (e) => {
-        const yearId = e.target.value;
-        
-        semesterSelect.innerHTML = '<option value="">Select Semester</option>';
-        semesterSelect.disabled = true;
-        sectionSelect.innerHTML = '<option value="">Select Section</option>';
-        sectionSelect.disabled = true;
-
-        if (yearId) {
-        const { data, error } = await _supabase
-            .from('semesters')
-            .select('*')
-            .eq('year_id', yearId);
-            
-        if (data && data.length > 0) {
-            data.forEach(sem => {
-            const option = document.createElement('option');
-            option.value = sem.id;
-            option.textContent = sem.name;
-            semesterSelect.appendChild(option);
-            });
-            semesterSelect.disabled = false;
-        }
-        }
-    });
-
-    // 5. Listen for Semester selection to fetch specific Sections
-    semesterSelect.addEventListener('change', async (e) => {
-        const semesterId = e.target.value;
-        
-        sectionSelect.innerHTML = '<option value="">Select Section</option>';
-        sectionSelect.disabled = true;
-
-        if (semesterId) {
-        const { data, error } = await _supabase
-            .from('sections')
-            .select('*')
-            .eq('semester_id', semesterId);
-            
-        if (data && data.length > 0) {
-            data.forEach(sec => {
-            const option = document.createElement('option');
-            option.value = sec.id;
-            option.textContent = sec.name;
-            sectionSelect.appendChild(option);
-            });
-            sectionSelect.disabled = false;
-        }
-        }
-    });
-    
-    const emailInput = document.getElementById('email-input');
-    const passwordInput = document.getElementById('password-input');
-    const authMessage = document.getElementById('auth-message');
-    const logoutBtn = document.getElementById('logout-btn');
-
-    document.getElementById('signup-btn').addEventListener('click', async () => {
-    const { data, error } = await _supabase.auth.signUp({
-        email: emailInput.value,
-        password: passwordInput.value,
-    });
-    if (error) authMessage.textContent = 'Error: ' + error.message;
-    else authMessage.textContent = 'Sign up successful! You can now log in.';
-    });
-
-    document.getElementById('login-btn').addEventListener('click', async () => {
-    const { data, error } = await _supabase.auth.signInWithPassword({
-        email: emailInput.value,
-        password: passwordInput.value,
-    });
-    if (error) authMessage.textContent = 'Error: ' + error.message;
-    else {
-        authMessage.textContent = 'Logged in as: ' + data.user.email;
-        logoutBtn.style.display = 'inline-block';
-    }
-    });
-
-    logoutBtn.addEventListener('click', async () => {
-    const { error } = await _supabase.auth.signOut();
-    if (error) authMessage.textContent = 'Error: ' + error.message;
-    else {
-        authMessage.textContent = 'Logged out successfully.';
-        logoutBtn.style.display = 'none';
-        emailInput.value = '';
-        passwordInput.value = '';
-    }
-    });
-    </script>
-
-    <!-- Upload Modal -->
-    <div id="upload-modal" class="fixed inset-0 bg-slate-900 bg-opacity-50 z-50 hidden flex items-center justify-center backdrop-blur-sm">
-        <div class="bg-white rounded-xl shadow-2xl p-6 max-w-md w-full mx-4">
-            <h3 class="text-xl font-bold text-dark mb-4" id="upload-modal-title">Upload Academic Material</h3>
-            <form id="upload-form" class="space-y-4">
-                <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-1">Title</label>
-                    <input type="text" id="upload-title" placeholder="e.g., Data Structures Module 1" required class="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-primary outline-none">
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-1">Description / Details</label>
-                    <input type="text" id="upload-desc" placeholder="e.g., Handwritten notes, Modules 1-5" required class="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-primary outline-none">
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-1">Price per page (Max ₹20)</label>
-                    <input type="number" id="upload-price" max="20" min="1" placeholder="10" required class="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-primary outline-none">
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-1">Select PDF File</label>
-                    <input type="file" id="upload-file-input" accept=".pdf" required class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-primary hover:file:bg-blue-100">
-                </div>
-                <div class="flex gap-2 pt-2">
-                    <button type="button" onclick="closeUploadModal()" class="flex-1 bg-slate-200 text-slate-700 font-bold py-2 rounded-lg hover:bg-slate-300 text-sm">Cancel</button>
-                    <button type="submit" class="flex-1 bg-primary text-white font-bold py-2 rounded-lg hover:bg-dark text-sm">Upload File</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <script>
-    let currentUploadType = 'note';
-
-    function openUploadModal(type) {
-        currentUploadType = type;
-        const modalTitle = type === 'note' ? 'Upload Class Note' : type === 'pyq' ? 'Upload PYQ' : 'Upload Lab File';
-        document.getElementById('upload-modal-title').textContent = modalTitle;
-        document.getElementById('upload-modal').classList.remove('hidden');
-    }
-
-    function closeUploadModal() {
-        document.getElementById('upload-modal').classList.add('hidden');
-        document.getElementById('upload-form').reset();
-    }
 
         document.getElementById('upload-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        const title = document.getElementById('upload-title').value;
-        const description = document.getElementById('upload-desc').value;
-        const price = parseFloat(document.getElementById('upload-price').value);
-        const fileInput = document.getElementById('upload-file-input').files[0];
+            e.preventDefault();
+            
+            const title = document.getElementById('upload-title').value;
+            const description = document.getElementById('upload-desc').value;
+            const price = parseFloat(document.getElementById('upload-price').value);
+            const fileInput = document.getElementById('upload-file-input').files[0];
 
-        if (price > 20) {
-            alert('Price is capped at a maximum of ₹20 per page!');
-            return;
-        }
+            if (price > 20) {
+                alert('Price is capped at a maximum of ₹20 per page!');
+                return;
+            }
 
-        // Get current logged-in user
-        const { data: { user } } = await _supabase.auth.getUser();
-        if (!user) {
-            alert('You must be logged in to upload files!');
-            return;
-        }
+            const { data: { user } } = await _supabase.auth.getUser();
+            if (!user) {
+                alert('You must be logged in to upload files!');
+                return;
+            }
 
-        // 1. Upload file to Supabase Storage
-        const fileExt = fileInput.name.split('.').pop();
-        const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
-        const filePath = `${fileName}`;
+            const fileExt = fileInput.name.split('.').pop();
+            const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
+            const filePath = `${fileName}`;
 
-        const { error: uploadError } = await _supabase.storage
-            .from('marketplace_files')
-            .upload(filePath, fileInput);
+            const { error: uploadError } = await _supabase.storage.from('marketplace_files').upload(filePath, fileInput);
 
-        if (uploadError) {
-            alert('Storage Error: ' + uploadError.message);
-            return;
-        }
+            if (uploadError) {
+                alert('Storage Error: ' + uploadError.message);
+                return;
+            }
 
-        // Get public URL
-        const { data: { publicUrl } } = _supabase.storage
-            .from('marketplace_files')
-            .getPublicUrl(filePath);
+            const { data: { publicUrl } } = _supabase.storage.from('marketplace_files').getPublicUrl(filePath);
 
-        // 2. Insert metadata into database table (Updated for PYQs)
-        let targetTable = 'notes';
-        if (currentUploadType === 'lab') targetTable = 'lab_files';
-        if (currentUploadType === 'pyq') targetTable = 'pyqs';
+            let targetTable = 'notes';
+            if (currentUploadType === 'lab') targetTable = 'lab_files';
+            if (currentUploadType === 'pyq') targetTable = 'pyqs';
 
-        const payload = {
-            title: title,
-            description: description,
-            price_per_page: price,
-            file_url: publicUrl,
-            seller_id: user.id
-        };
+            const payload = {
+                title: title,
+                description: description,
+                price_per_page: price,
+                file_url: publicUrl,
+                seller_id: user.id
+            };
 
-        const { error: dbError } = await _supabase.from(targetTable).insert([payload]);
+            const { error: dbError } = await _supabase.from(targetTable).insert([payload]);
 
-        if (dbError) {
-            alert('Database Error: ' + dbError.message);
-        } else {
-            alert('Upload successful!');
-            closeUploadModal();
-            fetchMarketplaceData();
-        }
-    });
+            if (dbError) {
+                alert('Database Error: ' + dbError.message);
+            } else {
+                alert('Upload successful!');
+                closeUploadModal();
+                fetchMarketplaceData();
+            }
+        });
 
-    async function fetchMarketplaceData() {
-        // Fetch dynamic notes
-        const { data: notes } = await _supabase.from('notes').select('*');
-        const notesGrid = document.getElementById('notes-grid');
-        if (notes && notes.length > 0) {
-            notesGrid.innerHTML = notes.map(n => `
-                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden p-4">
-                    <h3 class="font-bold text-slate-900 truncate">${n.title}</h3>
-                    <p class="text-sm text-slate-500 mb-3">${n.description || 'Verified Material'}</p>
-                    <div class="flex justify-between items-center mb-4">
-                        <span class="text-lg font-extrabold text-dark">₹${n.price_per_page}/pg</span>
+        async function fetchMarketplaceData() {
+            // Notes
+            const { data: notes } = await _supabase.from('notes').select('*');
+            const notesGrid = document.getElementById('notes-grid');
+            if (notes && notes.length > 0) {
+                notesGrid.innerHTML = notes.map(n => `
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden p-4">
+                        <h3 class="font-bold text-slate-900 truncate">${n.title}</h3>
+                        <p class="text-sm text-slate-500 mb-3">${n.description || 'Verified Material'}</p>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-lg font-extrabold text-dark">₹${n.price_per_page}/pg</span>
+                        </div>
+                        <a href="${n.file_url}" target="_blank" class="block text-center bg-primary text-white font-semibold py-1.5 rounded-lg hover:bg-dark text-sm">View PDF</a>
                     </div>
-                    <a href="${n.file_url}" target="_blank" class="block text-center bg-primary text-white font-semibold py-1.5 rounded-lg hover:bg-dark text-sm">View PDF</a>
-                </div>
-            `).join('');
-        } else {
-            notesGrid.innerHTML = `<p class="text-slate-500 text-sm">No notes uploaded yet. Be the first!</p>`;
-        }
+                `).join('');
+            } else {
+                if(notesGrid) notesGrid.innerHTML = `<p class="text-slate-500 text-sm">No notes uploaded yet. Be the first!</p>`;
+            }
 
-        // Fetch dynamic lab files
-        const { data: labs } = await _supabase.from('lab_files').select('*');
-        const labGrid = document.getElementById('lab-grid');
-        if (labs && labs.length > 0) {
-            labGrid.innerHTML = labs.map(l => `
-                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4">
-                    <h3 class="font-bold text-slate-900 leading-tight">${l.title}</h3>
-                    <p class="text-sm text-slate-600 mb-4">${l.description || 'Complete file'}</p>
-                    <div class="flex justify-between items-center pt-4 border-t border-slate-100">
-                        <span class="text-lg font-extrabold text-dark">₹${l.price_per_page}/pg</span>
-                        <a href="${l.file_url}" target="_blank" class="bg-dark text-white font-semibold px-4 py-1.5 rounded-lg hover:bg-primary text-sm">Open File</a>
+            // Labs
+            const { data: labs } = await _supabase.from('lab_files').select('*');
+            const labGrid = document.getElementById('lab-grid');
+            if (labs && labs.length > 0) {
+                labGrid.innerHTML = labs.map(l => `
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4">
+                        <h3 class="font-bold text-slate-900 leading-tight">${l.title}</h3>
+                        <p class="text-sm text-slate-600 mb-4">${l.description || 'Complete file'}</p>
+                        <div class="flex justify-between items-center pt-4 border-t border-slate-100">
+                            <span class="text-lg font-extrabold text-dark">₹${l.price_per_page}/pg</span>
+                            <a href="${l.file_url}" target="_blank" class="bg-dark text-white font-semibold px-4 py-1.5 rounded-lg hover:bg-primary text-sm">Open File</a>
+                        </div>
                     </div>
-                </div>
-            `).join('');
-        } else {
-            labGrid.innerHTML = `<p class="text-slate-500 text-sm">No lab files available yet.</p>`;
-        }
-    }
+                `).join('');
+            } else {
+                if(labGrid) labGrid.innerHTML = `<p class="text-slate-500 text-sm">No lab files available yet.</p>`;
+            }
 
-    // Trigger initial data load
-    fetchMarketplaceData();
+            // PYQs
+            const { data: pyqs } = await _supabase.from('pyqs').select('*');
+            const pyqGrid = document.getElementById('pyq-grid');
+            if (pyqs && pyqs.length > 0) {
+                pyqGrid.innerHTML = pyqs.map(p => `
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden p-4">
+                        <h3 class="font-bold text-slate-900 truncate">${p.title}</h3>
+                        <p class="text-sm text-slate-500 mb-3">${p.description || 'Verified PYQ'}</p>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-lg font-extrabold text-dark">₹${p.price_per_page}/pg</span>
+                        </div>
+                        <a href="${p.file_url}" target="_blank" class="block text-center bg-primary text-white font-semibold py-1.5 rounded-lg hover:bg-dark text-sm">View PDF</a>
+                    </div>
+                `).join('');
+            } else {
+                if(pyqGrid) pyqGrid.innerHTML = `<p class="text-slate-500 text-sm">No PYQs available yet.</p>`;
+            }
+        }
+
+        fetchMarketplaceData();
     </script>
 </body>
 </html>
