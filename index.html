@@ -35,17 +35,6 @@
             }
         }
     </script>
-
-    <style>
-        /* Custom scrollbar for chat */
-        .chat-scroll::-webkit-scrollbar {
-            width: 6px;
-        }
-        .chat-scroll::-webkit-scrollbar-thumb {
-            background-color: #cbd5e1;
-            border-radius: 10px;
-        }
-    </style>
 </head>
 <body class="bg-background text-slate-800 font-sans h-screen overflow-hidden flex flex-col">
 
@@ -133,24 +122,19 @@
                     <h1 class="text-2xl font-extrabold text-primary tracking-tight">OnlyNotes</h1>
                 </div>
                 
-                <!-- Profile Widget -->
-                <div class="flex items-center gap-4 bg-background p-2 rounded-xl border border-slate-200 cursor-pointer hover:bg-slate-100 transition-colors" onclick="showModal('Profile Stats', 'Rank: Egg (Beginner level). Publish more notes to gain IQ/EXP and rank up!')">
-                    <div class="w-10 h-10 bg-slate-300 rounded-full flex items-center justify-center text-xl">🥚</div>
-                    <div class="hidden sm:block">
-                        <p class="text-sm font-bold text-slate-800 leading-none">Rank: Egg</p>
-                        <div class="w-24 h-2 bg-slate-300 rounded-full mt-1.5 overflow-hidden">
-                            <div class="w-1/4 h-full bg-primary rounded-full"></div>
-                        </div>
-                        <p class="text-[10px] text-slate-500 mt-0.5 font-medium text-right">25/100 IQ</p>
+                <!-- Profile Widget (Absolute Top Right) -->
+                <div class="absolute right-4 top-3 sm:right-6 lg:right-8 cursor-pointer hover:ring-2 hover:ring-primary rounded-full transition-all" onclick="switchTab('profile')">
+                    <div class="w-10 h-10 bg-slate-300 rounded-full flex items-center justify-center text-xl overflow-hidden shadow-md border border-slate-200">
+                        <img id="header-avatar" src="" class="w-full h-full object-cover hidden" />
+                        <span id="header-avatar-emoji">🥚</span>
                     </div>
                 </div>
-            </div>
             
             <!-- Navigation -->
             <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex gap-6 overflow-x-auto no-scrollbar">
-                <button onclick="switchTab('notes')" id="nav-notes" class="nav-btn text-primary font-bold border-b-2 border-primary py-3 px-2 whitespace-nowrap transition-colors">Notes & PYQs</button>
+                <button onclick="switchTab('notes')" id="nav-notes" class="nav-btn text-primary font-bold border-b-2 border-primary py-3 px-2 whitespace-nowrap transition-colors">Class Notes</button>
                 <button onclick="switchTab('lab')" id="nav-lab" class="nav-btn text-slate-500 hover:text-primary font-medium py-3 px-2 whitespace-nowrap transition-colors">Lab Files</button>
-                <button onclick="switchTab('chat')" id="nav-chat" class="nav-btn text-slate-500 hover:text-primary font-medium py-3 px-2 whitespace-nowrap transition-colors">Chat Room</button>
+                <button onclick="switchTab('pyq')" id="nav-pyq" class="nav-btn text-slate-500 hover:text-primary font-medium py-3 px-2 whitespace-nowrap transition-colors">Exam Zone</button>
             </nav>
         </header>
 
@@ -160,197 +144,157 @@
                 
                 <!-- NOTES VIEW -->
                 <div id="view-notes" class="view-section animate-fade-in">
-                    <!-- Notes Tabs -->
-                    <div class="flex gap-2 mb-6 bg-slate-200 p-1 rounded-lg w-max">
-                        <button class="bg-white text-dark font-bold px-4 py-1.5 rounded-md shadow-sm text-sm">Paid Tier</button>
-                        <button class="text-slate-600 font-medium px-4 py-1.5 rounded-md text-sm hover:text-slate-900 transition-colors" onclick="showModal('Free Tier', 'Free tier notes are currently empty in this community. Be the first to upload!')">Free Tier</button>
-                    </div>
-                    
-                    <div class="flex justify-between items-end mb-4">
-                        <h2 class="text-xl font-bold text-slate-800">Trending in B.Tech CS (3rd Sem)</h2>
-                        <button class="text-primary text-sm font-semibold hover:underline">Filter</button>
+                    <div class="flex justify-between items-center mb-6">
+                        <div class="flex gap-2 bg-slate-200 p-1 rounded-lg w-max">
+                            <button id="tier-paid-notes" onclick="setTier('notes', 'paid')" class="bg-white text-dark font-bold px-4 py-1.5 rounded-md shadow-sm text-sm transition-all">Paid Tier</button>
+                            <button id="tier-free-notes" onclick="setTier('notes', 'free')" class="text-slate-600 font-medium px-4 py-1.5 rounded-md text-sm hover:text-slate-900 transition-all">Free Tier</button>
+                        </div>
+                        <button onclick="openUploadModal('note')" class="bg-primary hover:bg-dark text-white font-bold px-4 py-2 rounded-lg text-sm shadow-sm transition-all">+ Upload Note</button>
                     </div>
 
-                    <!-- Notes Grid -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                        
-                        <!-- Card 1 -->
-                        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden hover:shadow-md transition-shadow group">
-                            <div class="h-32 bg-gradient-to-r from-blue-50 to-blue-100 flex items-center justify-center relative">
-                                <span class="absolute top-2 right-2 bg-white text-xs font-bold px-2 py-1 rounded-full text-primary shadow-sm border border-blue-100">Physical</span>
-                                <svg class="w-12 h-12 text-primary opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
-                            </div>
-                            <div class="p-4">
-                                <h3 class="font-bold text-slate-900 truncate">Data Structures Complete</h3>
-                                <p class="text-sm text-slate-500 mb-3">Module 1-5 Handwritten</p>
-                                <div class="flex justify-between items-center mb-4">
-                                    <span class="text-lg font-extrabold text-dark">₹10/pg</span>
-                                    <span class="text-xs bg-amber-100 text-amber-800 px-2 py-0.5 rounded font-semibold flex items-center gap-1">⭐ Nerd</span>
-                                </div>
-                                <div class="grid grid-cols-2 gap-2">
-                                    <button onclick="handleAction('Bargain', 'Initiated bargain chat with the seller.')" class="border-2 border-primary text-primary font-semibold py-1.5 rounded-lg hover:bg-blue-50 transition-colors text-sm">Bargain</button>
-                                    <button onclick="handleAction('Buy', 'Proceeding to secure payment screen.')" class="bg-primary text-white font-semibold py-1.5 rounded-lg hover:bg-dark transition-colors text-sm">Buy</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Card 2 -->
-                        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden hover:shadow-md transition-shadow group">
-                            <div class="h-32 bg-gradient-to-r from-slate-50 to-slate-100 flex items-center justify-center relative">
-                                <span class="absolute top-2 right-2 bg-white text-xs font-bold px-2 py-1 rounded-full text-slate-600 shadow-sm border border-slate-200">Digital PDF</span>
-                                <svg class="w-12 h-12 text-slate-400 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                            </div>
-                            <div class="p-4">
-                                <h3 class="font-bold text-slate-900 truncate">Discrete Math PYQs</h3>
-                                <p class="text-sm text-slate-500 mb-3">2019-2023 Solved</p>
-                                <div class="flex justify-between items-center mb-4">
-                                    <span class="text-lg font-extrabold text-dark">₹8/pg</span>
-                                    <span class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-semibold flex items-center gap-1">🥚 Egg</span>
-                                </div>
-                                <div class="grid grid-cols-2 gap-2">
-                                    <button onclick="handleAction('Bargain', 'Initiated bargain chat with the seller.')" class="border-2 border-primary text-primary font-semibold py-1.5 rounded-lg hover:bg-blue-50 transition-colors text-sm">Bargain</button>
-                                    <button onclick="handleAction('Buy', 'Proceeding to secure payment screen.')" class="bg-primary text-white font-semibold py-1.5 rounded-lg hover:bg-dark transition-colors text-sm">Buy</button>
-                                </div>
-                            </div>
-                        </div>
-
+                    <h2 class="text-xl font-bold text-slate-800 mb-4">Class Notes</h2>
+                    <div id="notes-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        <p class="text-slate-500 text-sm">Select your community or load notes...</p>
                     </div>
                 </div>
 
                 <!-- LAB FILES VIEW -->
                 <div id="view-lab" class="view-section hidden h-full flex flex-col animate-fade-in">
-                    
                     <!-- Banner -->
                     <div class="bg-gradient-to-r from-dark to-primary rounded-2xl p-6 md:p-8 mb-8 text-white shadow-lg relative overflow-hidden">
                         <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
                             <div>
                                 <h2 class="text-2xl md:text-3xl font-extrabold mb-2">Get Your Lab Files Written!</h2>
-                                <p class="text-blue-100 font-medium mb-4 max-w-xl">Hate drawing complex flowcharts? Our AI instantly prices diagrams by complexity. Only pay for what you need done. Capped at ₹20/page max.</p>
+                                <p class="text-blue-100 font-medium mb-4 max-w-xl">Hate drawing complex flowcharts? Our AI instantly prices diagrams by complexity. Capped at ₹20/page max.</p>
                                 <button onclick="handleAction('Request Lab File', 'Opening AI Image Uploader to quote your diagrams...')" class="bg-white text-dark font-bold px-6 py-2.5 rounded-lg shadow-md hover:bg-blue-50 transition-colors transform hover:-translate-y-0.5">Request Service</button>
-                            </div>
-                            <!-- Illustration decorative -->
-                            <div class="hidden md:block w-32 h-32 opacity-80">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
                             </div>
                         </div>
                         <div class="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-white opacity-10 rounded-full blur-2xl"></div>
                     </div>
 
+                    <div class="flex justify-between items-center mb-6">
+                        <div class="flex gap-2 bg-slate-200 p-1 rounded-lg w-max">
+                            <button id="tier-paid-lab" onclick="setTier('lab', 'paid')" class="bg-white text-dark font-bold px-4 py-1.5 rounded-md shadow-sm text-sm transition-all">Paid Tier</button>
+                            <button id="tier-free-lab" onclick="setTier('lab', 'free')" class="text-slate-600 font-medium px-4 py-1.5 rounded-md text-sm hover:text-slate-900 transition-all">Free Tier</button>
+                        </div>
+                        <button onclick="openUploadModal('lab')" class="bg-primary hover:bg-dark text-white font-bold px-4 py-2 rounded-lg text-sm shadow-sm transition-all">+ Upload Lab File</button>
+                    </div>
+
                     <h2 class="text-xl font-bold text-slate-800 mb-4">Completed Lab Files for Sale</h2>
-                    <!-- Grid -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                        <!-- Lab Card -->
-                        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 hover:shadow-md transition-shadow">
-                            <div class="flex items-center gap-3 mb-3">
-                                <div class="w-10 h-10 bg-blue-100 text-primary rounded-lg flex items-center justify-center font-bold">OS</div>
+                    <div id="lab-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        <p class="text-slate-500 text-sm">Loading lab files...</p>
+                    </div>
+                </div>
+
+                <!-- EXAM ZONE (PYQs) VIEW -->
+
+                <!-- PROFILE VIEW -->
+
+                <div id="view-profile" class="view-section hidden flex-col animate-fade-in pb-10">
+                    <div class="max-w-4xl mx-auto w-full bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mt-6">
+                        <h2 class="text-2xl font-bold text-slate-800 mb-6 border-b border-slate-100 pb-4">Profile Settings</h2>
+                        <div class="flex flex-col md:flex-row gap-8 items-start">
+                            
+                            <!-- Avatar Upload -->
+                            <div class="relative group cursor-pointer rounded-full" onclick="document.getElementById('avatar-upload').click()">
+                                <div class="w-28 h-28 bg-slate-200 rounded-full flex items-center justify-center overflow-hidden border-4 border-white shadow-lg">
+                                    <img id="profile-avatar-img" src="" class="w-full h-full object-cover hidden" />
+                                    <span id="profile-avatar-placeholder" class="text-4xl">🥚</span>
+                                </div>
+                                <div class="absolute inset-0 bg-black bg-opacity-50 rounded-full hidden group-hover:flex items-center justify-center text-white text-xs font-bold transition-all">Change</div>
+                                <input type="file" id="avatar-upload" class="hidden" accept="image/*" onchange="handleAvatarUpload(event)" />
+                            </div>
+
+                            <!-- User Details -->
+                            <div class="flex-1 space-y-5 w-full">
                                 <div>
-                                    <h3 class="font-bold text-slate-900 leading-tight">OS Lab Complete File</h3>
-                                    <p class="text-xs text-slate-500">12 Experiments + Diagrams</p>
+                                    <label class="block text-sm font-semibold text-slate-700 mb-1">Username</label>
+                                    <div class="flex gap-2">
+                                        <input type="text" id="profile-username" placeholder="Enter a username..." class="flex-1 border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-primary outline-none">
+                                        <button onclick="saveProfile()" class="bg-primary hover:bg-dark text-white font-bold px-5 py-2.5 rounded-lg text-sm transition-all shadow-sm">Save</button>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-semibold text-slate-700 mb-1">Current Rank & Experience</h4>
+                                    <div class="bg-slate-50 border border-slate-200 rounded-lg p-4">
+                                        <div class="flex justify-between items-center mb-2">
+                                            <span class="font-extrabold text-slate-900 text-lg" id="profile-rank">Egg</span>
+                                            <span class="text-sm font-bold text-primary" id="profile-exp">25 / 100 IQ</span>
+                                        </div>
+                                        <div class="w-full h-3 bg-slate-200 rounded-full overflow-hidden">
+                                            <div class="h-full bg-primary rounded-full w-1/4"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="pt-2">
+                                    <button onclick="handleDeleteAccount()" class="text-red-500 hover:text-white hover:bg-red-500 font-bold px-4 py-2 rounded-lg text-sm transition-all border border-red-200 hover:border-red-500">Delete Account</button>
                                 </div>
                             </div>
-                            <p class="text-sm text-slate-600 mb-4 line-clamp-2">Physical copy. Neat handwriting, all flowcharts drawn with stencils.</p>
-                            <div class="flex justify-between items-center pt-4 border-t border-slate-100">
-                                <div>
-                                    <span class="text-lg font-extrabold text-dark">₹250</span><span class="text-xs text-slate-500"> total</span>
+                        </div>
+                    </div>
+
+                    <!-- Purchase Analysis -->
+                    <div class="max-w-4xl mx-auto w-full mt-8">
+                        <h2 class="text-2xl font-bold text-slate-800 mb-6">Library & Activity</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <!-- Notes -->
+                            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
+                                <h3 class="font-extrabold text-lg text-slate-900 mb-4 border-b border-slate-100 pb-2">Class Notes</h3>
+                                <div class="space-y-4">
+                                    <div>
+                                        <h4 class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Saved (Free Tier)</h4>
+                                        <div class="space-y-2 text-sm text-slate-600" id="library-free-notes">No saved items yet.</div>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-[10px] font-bold text-primary uppercase tracking-wider mb-2">Purchased (Paid Tier)</h4>
+                                        <div class="space-y-2 text-sm text-slate-600" id="library-paid-notes">No purchases yet.</div>
+                                    </div>
                                 </div>
-                                <button onclick="handleAction('Bid', 'Opening bidding interface for this physical copy.')" class="bg-dark text-white font-semibold px-4 py-1.5 rounded-lg hover:bg-primary transition-colors text-sm">Place Bid</button>
+                            </div>
+                            <!-- Labs -->
+                            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
+                                <h3 class="font-extrabold text-lg text-slate-900 mb-4 border-b border-slate-100 pb-2">Lab Files</h3>
+                                <div class="space-y-4">
+                                    <div>
+                                        <h4 class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Saved (Free Tier)</h4>
+                                        <div class="space-y-2 text-sm text-slate-600" id="library-free-labs">No saved items yet.</div>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-[10px] font-bold text-primary uppercase tracking-wider mb-2">Purchased (Paid Tier)</h4>
+                                        <div class="space-y-2 text-sm text-slate-600" id="library-paid-labs">No purchases yet.</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- PYQs -->
+                            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
+                                <h3 class="font-extrabold text-lg text-slate-900 mb-4 border-b border-slate-100 pb-2">Exam Zone</h3>
+                                <div class="space-y-4">
+                                    <div>
+                                        <h4 class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Saved (Free Tier)</h4>
+                                        <div class="space-y-2 text-sm text-slate-600" id="library-free-pyqs">No saved items yet.</div>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-[10px] font-bold text-primary uppercase tracking-wider mb-2">Purchased (Paid Tier)</h4>
+                                        <div class="space-y-2 text-sm text-slate-600" id="library-paid-pyqs">No purchases yet.</div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- CHAT ROOM VIEW -->
-                <div id="view-chat" class="view-section hidden h-full">
-                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 h-[calc(100vh-140px)] flex overflow-hidden">
-                        
-                        <!-- Contact List Sidebar -->
-                        <div class="w-1/3 min-w-[250px] border-r border-slate-200 flex flex-col bg-slate-50">
-                            <div class="p-4 border-b border-slate-200 bg-white">
-                                <input type="text" placeholder="Search chats..." class="w-full bg-slate-100 border-transparent focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary rounded-lg px-4 py-2 text-sm transition-all outline-none">
-                            </div>
-                            <div class="flex-1 overflow-y-auto chat-scroll p-2">
-                                <!-- Chat Item -->
-                                <div class="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-200 cursor-pointer transition-colors bg-white shadow-sm mb-1 border border-slate-100">
-                                    <div class="relative">
-                                        <div class="w-10 h-10 bg-gradient-to-tr from-primary to-blue-400 rounded-full flex items-center justify-center text-white font-bold">R</div>
-                                        <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
-                                    </div>
-                                    <div class="flex-1 min-w-0">
-                                        <div class="flex justify-between items-baseline">
-                                            <h4 class="font-bold text-slate-900 truncate text-sm">Rahul (DSA Notes)</h4>
-                                            <span class="text-[10px] text-slate-400">10:42 AM</span>
-                                        </div>
-                                        <p class="text-xs text-slate-500 truncate">I can do 8rs per page if you buy...</p>
-                                    </div>
-                                </div>
-                                <!-- Group Chat Item -->
-                                <div class="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-200 cursor-pointer transition-colors mb-1">
-                                    <div class="w-10 h-10 bg-slate-300 rounded-full flex items-center justify-center text-slate-600 font-bold">CS</div>
-                                    <div class="flex-1 min-w-0">
-                                        <div class="flex justify-between items-baseline">
-                                            <h4 class="font-bold text-slate-900 truncate text-sm">CS Sec A Batch</h4>
-                                            <span class="text-[10px] text-slate-400">Yesterday</span>
-                                        </div>
-                                        <p class="text-xs text-slate-500 truncate">Anyone has the OS lab syllabus?</p>
-                                    </div>
-                                </div>
-                            </div>
+                <div id="view-pyq" class="view-section hidden animate-fade-in">
+                    <div class="flex justify-between items-center mb-6">
+                        <div class="flex gap-2 bg-slate-200 p-1 rounded-lg w-max">
+                            <button id="tier-paid-pyq" onclick="setTier('pyq', 'paid')" class="bg-white text-dark font-bold px-4 py-1.5 rounded-md shadow-sm text-sm transition-all">Paid Tier</button>
+                            <button id="tier-free-pyq" onclick="setTier('pyq', 'free')" class="text-slate-600 font-medium px-4 py-1.5 rounded-md text-sm hover:text-slate-900 transition-all">Free Tier</button>
                         </div>
+                        <button onclick="openUploadModal('pyq')" class="bg-primary hover:bg-dark text-white font-bold px-4 py-2 rounded-lg text-sm shadow-sm transition-all">+ Upload PYQ</button>
+                    </div>
 
-                        <!-- Chat Area -->
-                        <div class="flex-1 flex flex-col bg-white">
-                            <!-- Chat Header -->
-                            <div class="h-16 border-b border-slate-200 flex items-center justify-between px-6 bg-white">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 bg-gradient-to-tr from-primary to-blue-400 rounded-full flex items-center justify-center text-white font-bold">R</div>
-                                    <div>
-                                        <h3 class="font-bold text-slate-900">Rahul (Seller)</h3>
-                                        <p class="text-xs text-green-500 font-medium">Online</p>
-                                    </div>
-                                </div>
-                                <div class="flex gap-4 text-slate-400">
-                                    <button onclick="handleAction('Voice Call', 'Initiating WebRTC Voice Call...')" class="hover:text-primary transition-colors"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg></button>
-                                    <button onclick="handleAction('Video Call', 'Initiating WebRTC Video Call...')" class="hover:text-primary transition-colors"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg></button>
-                                </div>
-                            </div>
-                            
-                            <!-- Chat Messages -->
-                            <div class="flex-1 overflow-y-auto p-6 chat-scroll flex flex-col gap-4 bg-slate-50/50">
-                                <!-- Received Msg -->
-                                <div class="flex justify-start">
-                                    <div class="bg-white border border-slate-200 text-slate-700 px-4 py-2 rounded-2xl rounded-tl-none shadow-sm max-w-md">
-                                        <p class="text-sm">Hey, you interested in the DSA handwritten notes?</p>
-                                    </div>
-                                </div>
-                                <!-- Sent Msg -->
-                                <div class="flex justify-end">
-                                    <div class="bg-primary text-white px-4 py-2 rounded-2xl rounded-tr-none shadow-sm max-w-md">
-                                        <p class="text-sm">Yes, but ₹10/page is a bit high. Can you do ₹8?</p>
-                                    </div>
-                                </div>
-                                <!-- Received Bargain Widget -->
-                                <div class="flex justify-start">
-                                    <div class="bg-white border border-blue-200 text-slate-700 p-4 rounded-2xl rounded-tl-none shadow-sm w-64">
-                                        <div class="text-xs text-primary font-bold mb-2 uppercase tracking-wide">Seller Offer</div>
-                                        <p class="text-2xl font-extrabold text-dark mb-1">₹8.50<span class="text-sm text-slate-500 font-normal"> / page</span></p>
-                                        <p class="text-xs text-slate-500 mb-4">For the complete 120 page module.</p>
-                                        <div class="flex gap-2">
-                                            <button onclick="handleAction('Bargain Accept', 'Offer accepted! Proceeding to checkout.')" class="flex-1 bg-green-500 text-white text-sm font-bold py-1.5 rounded-md hover:bg-green-600">Accept</button>
-                                            <button onclick="handleAction('Bargain Counter', 'Counter offer widget opened.')" class="flex-1 bg-slate-200 text-slate-700 text-sm font-bold py-1.5 rounded-md hover:bg-slate-300">Counter</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Input -->
-                            <div class="p-4 bg-white border-t border-slate-200 flex gap-2 items-center">
-                                <button class="text-slate-400 hover:text-primary transition-colors p-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg></button>
-                                <input type="text" placeholder="Type a message..." class="flex-1 bg-slate-100 border-transparent focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary rounded-full px-4 py-2 text-sm transition-all outline-none">
-                                <button onclick="handleAction('Message Sent', 'Message delivered.')" class="bg-primary hover:bg-dark text-white rounded-full p-2 h-9 w-9 flex items-center justify-center transition-colors shadow-md">
-                                    <svg class="w-4 h-4 transform rotate-90" fill="currentColor" viewBox="0 0 20 20"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path></svg>
-                                </button>
-                            </div>
-                        </div>
+                    <h2 class="text-xl font-bold text-slate-800 mb-4">Exam Zone (Past Papers)</h2>
+                    <div id="pyq-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        <p class="text-slate-500 text-sm">Loading PYQs...</p>
                     </div>
                 </div>
 
@@ -374,29 +318,142 @@
 
         // Tab Switching Logic
         function switchTab(tabId) {
-            // Hide all views
             document.querySelectorAll('.view-section').forEach(el => {
                 el.classList.add('hidden');
-                el.classList.remove('flex'); // Clean up flex classes for chat/lab views
+                el.classList.remove('flex', 'flex-col');
             });
             
-            // Reset nav button styles
             document.querySelectorAll('.nav-btn').forEach(btn => {
                 btn.classList.remove('text-primary', 'font-bold', 'border-b-2', 'border-primary');
                 btn.classList.add('text-slate-500', 'font-medium');
             });
 
-            // Show selected view
             const selectedView = document.getElementById(`view-${tabId}`);
             selectedView.classList.remove('hidden');
-            if(tabId === 'chat' || tabId === 'lab') {
-                selectedView.classList.add('flex');
+            if(tabId === 'lab' || tabId === 'profile') selectedView.classList.add('flex', 'flex-col');
+
+            const activeBtn = document.getElementById(`nav-${tabId}`);
+            if(activeBtn) {
+                activeBtn.classList.remove('text-slate-500', 'font-medium');
+                activeBtn.classList.add('text-primary', 'font-bold', 'border-b-2', 'border-primary');
+            }
+            
+            if(tabId === 'profile') loadProfileData();
+        }
+
+        // Profile Functions
+        async function loadProfileData() {
+            const { data: { user } } = await _supabase.auth.getUser();
+            if (!user) return;
+
+            const { data: profile } = await _supabase.from('profiles').select('*').eq('id', user.id).single();
+            
+            if (profile) {
+                if (profile.username) {
+                    document.getElementById('profile-username').value = profile.username;
+                    document.getElementById('header-username').textContent = profile.username;
+                }
+                if (profile.avatar_url) {
+                    updateAvatarVisuals(profile.avatar_url);
+                }
+                document.getElementById('profile-rank').textContent = profile.rank;
+                document.getElementById('profile-exp').textContent = `${profile.exp} / 100 IQ`;
+            }
+        }
+
+        async function saveProfile() {
+            const { data: { user } } = await _supabase.auth.getUser();
+            if (!user) return;
+            
+            const newUsername = document.getElementById('profile-username').value;
+            const { error } = await _supabase.from('profiles').upsert({ 
+                id: user.id, 
+                username: newUsername 
+            });
+
+            if (error) alert("Error saving: " + error.message);
+            else {
+                handleAction("Success", "Username updated successfully!");
+                document.getElementById('header-username').textContent = newUsername;
+            }
+        }
+
+        async function handleAvatarUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const { data: { user } } = await _supabase.auth.getUser();
+            if (!user) return;
+
+            const fileExt = file.name.split('.').pop();
+            const filePath = `${user.id}.${fileExt}`;
+
+            handleAction("Uploading...", "Please wait while we update your avatar.");
+
+            const { error: uploadError } = await _supabase.storage.from('avatars').upload(filePath, file, { upsert: true });
+            if (uploadError) {
+                alert("Upload failed: " + uploadError.message);
+                return;
             }
 
-            // Style selected nav button
-            const activeBtn = document.getElementById(`nav-${tabId}`);
-            activeBtn.classList.remove('text-slate-500', 'font-medium');
-            activeBtn.classList.add('text-primary', 'font-bold', 'border-b-2', 'border-primary');
+            const { data: { publicUrl } } = _supabase.storage.from('avatars').getPublicUrl(filePath);
+            await _supabase.from('profiles').upsert({ id: user.id, avatar_url: publicUrl });
+            
+            updateAvatarVisuals(publicUrl);
+            closeModal(); // close the uploading notification
+        }
+
+        function updateAvatarVisuals(url) {
+            const imgElements = ['profile-avatar-img', 'header-avatar'];
+            const placeholderElements = ['profile-avatar-placeholder', 'header-avatar-emoji'];
+            
+            imgElements.forEach(id => {
+                const el = document.getElementById(id);
+                el.src = url;
+                el.classList.remove('hidden');
+            });
+            
+            placeholderElements.forEach(id => document.getElementById(id).classList.add('hidden'));
+        }
+
+        async function handleDeleteAccount() {
+            if(confirm("Are you sure? This will delete your profile data. Complete account deletion requires a backend trigger.")) {
+                const { data: { user } } = await _supabase.auth.getUser();
+                if (user) await _supabase.from('profiles').delete().eq('id', user.id);
+                
+                await _supabase.auth.signOut();
+                window.location.reload();
+            }
+        }
+
+        // Track the active tier for each section
+        let currentTiers = {
+            notes: 'paid',
+            lab: 'paid',
+            pyq: 'paid'
+        };
+
+        function setTier(section, tier) {
+            currentTiers[section] = tier;
+            
+            const paidBtn = document.getElementById(`tier-paid-${section}`);
+            const freeBtn = document.getElementById(`tier-free-${section}`);
+            
+            // Active styling classes
+            const activeClasses = 'bg-white text-dark font-bold px-4 py-1.5 rounded-md shadow-sm text-sm transition-all';
+            // Inactive styling classes
+            const inactiveClasses = 'text-slate-600 font-medium px-4 py-1.5 rounded-md text-sm hover:text-slate-900 transition-all';
+            
+            if (tier === 'paid') {
+                paidBtn.className = activeClasses;
+                freeBtn.className = inactiveClasses;
+            } else {
+                freeBtn.className = activeClasses;
+                paidBtn.className = inactiveClasses;
+            }
+            
+            // Re-fetch data whenever a tier is switched
+            fetchMarketplaceData();
         }
 
         // Custom Modal Logic (Replaces Alert)
@@ -453,7 +510,7 @@
     <script>
       const { createClient } = supabase;
       const supabaseUrl = 'https://reizivfwohfzzuxkrbcr.supabase.co';
-      const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJlaXppdmZ3b2hmenp1eGtyYmNyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkyOTU3MzksImV4cCI6MjEwNDg3MTczOX0.ZqSsfPxGXEKj4t_cQ49jBYBx37kltDFD-c8PMDrmVzM';
+      const supabaseKey = 'sb_publishable_8y1FZpS8O2oZptMj8OjW-A_LnxmGRWF';
       const _supabase = createClient(supabaseUrl, supabaseKey);
     </script>
 
@@ -466,7 +523,7 @@
     // 1. Fetch and populate Colleges on page load
     async function loadColleges() {
         const { data, error } = await _supabase.from('colleges').select('*');
-        if (error) console.error('Error fetching colleges:', error);
+        if (error) console.error('Supabase Code:', error.code, '| Message:', error.message);
         
         if (data) {
         data.forEach(college => {
@@ -633,6 +690,155 @@
         passwordInput.value = '';
     }
     });
+    </script>
+
+    <!-- Upload Modal -->
+    <div id="upload-modal" class="fixed inset-0 bg-slate-900 bg-opacity-50 z-50 hidden flex items-center justify-center backdrop-blur-sm">
+        <div class="bg-white rounded-xl shadow-2xl p-6 max-w-md w-full mx-4">
+            <h3 class="text-xl font-bold text-dark mb-4" id="upload-modal-title">Upload Academic Material</h3>
+            <form id="upload-form" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Title</label>
+                    <input type="text" id="upload-title" placeholder="e.g., Data Structures Module 1" required class="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-primary outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Description / Details</label>
+                    <input type="text" id="upload-desc" placeholder="e.g., Handwritten notes, Modules 1-5" required class="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-primary outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Price per page (Max ₹20)</label>
+                    <input type="number" id="upload-price" max="20" min="1" placeholder="10" required class="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-primary outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Select PDF File</label>
+                    <input type="file" id="upload-file-input" accept=".pdf" required class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-primary hover:file:bg-blue-100">
+                </div>
+                <div class="flex gap-2 pt-2">
+                    <button type="button" onclick="closeUploadModal()" class="flex-1 bg-slate-200 text-slate-700 font-bold py-2 rounded-lg hover:bg-slate-300 text-sm">Cancel</button>
+                    <button type="submit" class="flex-1 bg-primary text-white font-bold py-2 rounded-lg hover:bg-dark text-sm">Upload File</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+    let currentUploadType = 'note';
+
+    function openUploadModal(type) {
+        currentUploadType = type;
+        const modalTitle = type === 'note' ? 'Upload Class Note' : type === 'pyq' ? 'Upload PYQ' : 'Upload Lab File';
+        document.getElementById('upload-modal-title').textContent = modalTitle;
+        document.getElementById('upload-modal').classList.remove('hidden');
+    }
+
+    function closeUploadModal() {
+        document.getElementById('upload-modal').classList.add('hidden');
+        document.getElementById('upload-form').reset();
+    }
+
+        document.getElementById('upload-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const title = document.getElementById('upload-title').value;
+        const description = document.getElementById('upload-desc').value;
+        const price = parseFloat(document.getElementById('upload-price').value);
+        const fileInput = document.getElementById('upload-file-input').files[0];
+
+        if (price > 20) {
+            alert('Price is capped at a maximum of ₹20 per page!');
+            return;
+        }
+
+        // Get current logged-in user
+        const { data: { user } } = await _supabase.auth.getUser();
+        if (!user) {
+            alert('You must be logged in to upload files!');
+            return;
+        }
+
+        // 1. Upload file to Supabase Storage
+        const fileExt = fileInput.name.split('.').pop();
+        const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
+        const filePath = `${fileName}`;
+
+        const { error: uploadError } = await _supabase.storage
+            .from('marketplace_files')
+            .upload(filePath, fileInput);
+
+        if (uploadError) {
+            alert('Storage Error: ' + uploadError.message);
+            return;
+        }
+
+        // Get public URL
+        const { data: { publicUrl } } = _supabase.storage
+            .from('marketplace_files')
+            .getPublicUrl(filePath);
+
+        // 2. Insert metadata into database table (Updated for PYQs)
+        let targetTable = 'notes';
+        if (currentUploadType === 'lab') targetTable = 'lab_files';
+        if (currentUploadType === 'pyq') targetTable = 'pyqs';
+
+        const payload = {
+            title: title,
+            description: description,
+            price_per_page: price,
+            file_url: publicUrl,
+            seller_id: user.id
+        };
+
+        const { error: dbError } = await _supabase.from(targetTable).insert([payload]);
+
+        if (dbError) {
+            alert('Database Error: ' + dbError.message);
+        } else {
+            alert('Upload successful!');
+            closeUploadModal();
+            fetchMarketplaceData();
+        }
+    });
+
+    async function fetchMarketplaceData() {
+        // Fetch dynamic notes
+        const { data: notes } = await _supabase.from('notes').select('*');
+        const notesGrid = document.getElementById('notes-grid');
+        if (notes && notes.length > 0) {
+            notesGrid.innerHTML = notes.map(n => `
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden p-4">
+                    <h3 class="font-bold text-slate-900 truncate">${n.title}</h3>
+                    <p class="text-sm text-slate-500 mb-3">${n.description || 'Verified Material'}</p>
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="text-lg font-extrabold text-dark">₹${n.price_per_page}/pg</span>
+                    </div>
+                    <a href="${n.file_url}" target="_blank" class="block text-center bg-primary text-white font-semibold py-1.5 rounded-lg hover:bg-dark text-sm">View PDF</a>
+                </div>
+            `).join('');
+        } else {
+            notesGrid.innerHTML = `<p class="text-slate-500 text-sm">No notes uploaded yet. Be the first!</p>`;
+        }
+
+        // Fetch dynamic lab files
+        const { data: labs } = await _supabase.from('lab_files').select('*');
+        const labGrid = document.getElementById('lab-grid');
+        if (labs && labs.length > 0) {
+            labGrid.innerHTML = labs.map(l => `
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4">
+                    <h3 class="font-bold text-slate-900 leading-tight">${l.title}</h3>
+                    <p class="text-sm text-slate-600 mb-4">${l.description || 'Complete file'}</p>
+                    <div class="flex justify-between items-center pt-4 border-t border-slate-100">
+                        <span class="text-lg font-extrabold text-dark">₹${l.price_per_page}/pg</span>
+                        <a href="${l.file_url}" target="_blank" class="bg-dark text-white font-semibold px-4 py-1.5 rounded-lg hover:bg-primary text-sm">Open File</a>
+                    </div>
+                </div>
+            `).join('');
+        } else {
+            labGrid.innerHTML = `<p class="text-slate-500 text-sm">No lab files available yet.</p>`;
+        }
+    }
+
+    // Trigger initial data load
+    fetchMarketplaceData();
     </script>
 </body>
 </html>
