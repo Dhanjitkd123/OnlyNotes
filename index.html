@@ -123,11 +123,10 @@
                 </div>
                 
                 <!-- Profile Widget (Absolute Top Right) -->
-                <div class="absolute right-4 top-3 sm:right-6 lg:right-8 cursor-pointer hover:ring-2 hover:ring-primary rounded-full transition-all" onclick="switchTab('profile')">
-                    <div class="w-10 h-10 bg-slate-300 rounded-full flex items-center justify-center text-xl overflow-hidden shadow-md border border-slate-200">
-                        <img id="header-avatar" src="" class="w-full h-full object-cover hidden" />
-                        <span id="header-avatar-emoji">🥚</span>
-                    </div>
+            <div class="absolute right-4 top-3 sm:right-6 lg:right-8 cursor-pointer hover:ring-2 hover:ring-primary rounded-full transition-all" onclick="handleProfileClick()">
+                <div class="w-10 h-10 bg-slate-300 rounded-full flex items-center justify-center text-xl overflow-hidden shadow-md border border-slate-200">
+                    <img id="header-avatar" src="" class="w-full h-full object-cover hidden" />
+                    <span id="header-avatar-emoji">👤</span>
                 </div>
             </div>
             
@@ -417,13 +416,35 @@
                 // Load profile data in the background (if logged in)
                 loadProfileData();
             } else {
-                form.reportValidity();
+                // If not logged in, ensure the avatar stays as a generic silhouette
+                const avatarEmoji = document.getElementById('header-avatar-emoji');
+                const avatarImg = document.getElementById('header-avatar');
+                
+                if (avatarEmoji) avatarEmoji.textContent = "👤";
+                if (avatarImg) avatarImg.classList.add('hidden');
             }
         }
 
         // ==========================================
         // UI & TAB LOGIC
         // ==========================================
+        async function handleProfileClick() {
+            const { data: { user } } = await _supabase.auth.getUser();
+            
+            if (user) {
+                // If logged in, open the profile tab normally
+                switchTab('profile');
+            } else {
+                // If not logged in, boot them back to the onboarding screen
+                document.getElementById('dashboard-screen').classList.add('hidden');
+                document.getElementById('dashboard-screen').classList.remove('flex');
+                document.getElementById('onboarding-screen').classList.remove('hidden');
+                
+                // Update the prompt text to explain why they were sent here
+                document.getElementById('auth-status-text').textContent = "Please log in to view or edit your profile.";
+            }
+        }
+
         function switchTab(tabId) {
             document.querySelectorAll('.view-section').forEach(el => {
                 el.classList.add('hidden');
