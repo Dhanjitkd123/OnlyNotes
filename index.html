@@ -20,6 +20,7 @@
     
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
                     fontFamily: {
@@ -36,13 +37,13 @@
         }
     </script>
 </head>
-<body class="bg-background text-slate-800 font-sans h-screen overflow-hidden flex flex-col">
+<body class="bg-background dark:bg-slate-900 text-slate-800 dark:text-slate-200 font-sans h-screen overflow-hidden flex flex-col transition-colors duration-300">
 
     <!-- Custom Modal -->
     <div id="custom-modal" class="fixed inset-0 bg-slate-900 bg-opacity-50 z-50 hidden flex items-center justify-center backdrop-blur-sm transition-opacity duration-300">
-        <div class="bg-white rounded-xl shadow-2xl p-6 max-w-sm w-full mx-4 transform scale-95 transition-transform duration-300" id="modal-content">
-            <h3 class="text-xl font-bold text-dark mb-2" id="modal-title">Notification</h3>
-            <p class="text-slate-600 mb-6" id="modal-message">Action completed.</p>
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-2xl p-6 max-w-sm w-full mx-4 transform scale-95 transition-transform duration-300" id="modal-content">
+            <h3 class="text-xl font-bold text-dark dark:text-primary mb-2" id="modal-title">Notification</h3>
+            <p class="text-slate-600 dark:text-slate-300 mb-6" id="modal-message">Action completed.</p>
             <div class="flex justify-end">
                 <button onclick="closeModal()" class="bg-primary hover:bg-dark text-white px-5 py-2 rounded-lg font-medium transition-colors w-full">Got it</button>
             </div>
@@ -50,54 +51,73 @@
     </div>
 
     <!-- Onboarding Screen -->
-    <div id="onboarding-screen" class="absolute inset-0 z-40 bg-background flex items-center justify-center p-4">
-        <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md border-t-4 border-primary">
+    <div id="onboarding-screen" class="absolute inset-0 z-40 bg-background dark:bg-slate-900 flex items-center justify-center p-4 transition-colors duration-300">
+        
+        <!-- Onboarding Dark Mode Toggle -->
+        <button class="theme-toggle absolute top-6 right-6 p-2.5 rounded-full bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 shadow-md hover:ring-2 hover:ring-primary transition-all z-50 focus:outline-none">
+            <svg class="theme-toggle-dark-icon hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+            <svg class="theme-toggle-light-icon hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+        </button>
+
+        <div class="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-xl w-full max-w-md border-t-4 border-primary transition-colors duration-300">
             <div class="text-center mb-6">
                 <h1 class="text-4xl font-extrabold text-primary mb-2 tracking-tight">OnlyNotes</h1>
-                <p class="text-slate-500 font-medium" id="auth-status-text">Log in to access your community.</p>
+                <p class="text-slate-500 dark:text-slate-400 font-medium" id="auth-status-text">Log in to access your community.</p>
             </div>
             
-            <div id="auth-container" class="space-y-3 mb-6 pb-6 border-b border-slate-200">
-                <input type="email" id="email-input" placeholder="Email address" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-primary outline-none" required />
-                <input type="password" id="password-input" placeholder="Password" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-primary outline-none" required />
+            <div id="auth-container" class="space-y-3 mb-6 pb-6 border-b border-slate-200 dark:border-slate-700">
+                <input type="email" id="email-input" placeholder="Email address" class="w-full border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-primary outline-none transition-colors" />
+                <input type="password" id="password-input" placeholder="Password" class="w-full border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-primary outline-none transition-colors" />
                 <div class="flex gap-2 mt-2">
                     <button id="login-btn" class="flex-1 bg-dark text-white font-bold py-2 rounded-lg hover:bg-primary transition-colors text-sm">Log In</button>
-                    <button id="signup-btn" class="flex-1 bg-slate-200 text-slate-700 font-bold py-2 rounded-lg hover:bg-slate-300 transition-colors text-sm">Sign Up</button>
+                    <button id="signup-btn" class="flex-1 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold py-2 rounded-lg hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors text-sm">Sign Up</button>
                 </div>
+                
+                <div class="relative flex items-center py-2">
+                    <div class="flex-grow border-t border-slate-300 dark:border-slate-600"></div>
+                    <span class="flex-shrink-0 mx-4 text-slate-400 dark:text-slate-500 text-xs font-bold uppercase">Or continue with</span>
+                    <div class="flex-grow border-t border-slate-300 dark:border-slate-600"></div>
+                </div>
+
+                <button id="google-login-btn" class="w-full flex items-center justify-center gap-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 font-bold py-2.5 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors text-sm shadow-sm">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 15.02 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+                    Google
+                </button>
+
                 <p id="auth-message" class="text-xs text-center text-primary font-semibold h-4"></p>
             </div>
-            <button id="logout-btn" class="w-full mb-6 bg-red-50 text-red-600 font-bold py-2 rounded-lg hover:bg-red-100 transition-colors text-sm hidden">Log Out</button>
+            <button id="logout-btn" class="w-full mb-6 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 font-bold py-2 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/50 transition-colors text-sm hidden">Log Out</button>
             
             <form id="community-form" class="space-y-4">
                 <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-1">College</label>
-                    <select id="college-select" required class="w-full border border-slate-300 rounded-lg p-3 text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary transition-shadow">
+                    <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">College</label>
+                    <select id="college-select" required class="w-full border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-primary transition-colors">
                         <option value="" disabled selected>Select your college</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-1">Course</label>
-                    <select id="course-select" required disabled class="w-full border border-slate-300 rounded-lg p-3 text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary transition-shadow disabled:bg-slate-100 disabled:text-slate-400">
+                    <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">Course</label>
+                    <select id="course-select" required disabled class="w-full border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-primary transition-colors disabled:bg-slate-100 disabled:text-slate-400 disabled:dark:bg-slate-800 disabled:dark:text-slate-500">
                         <option value="" disabled selected>Select your course</option>
                     </select>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-1">Year</label>
-                        <select id="year-select" required disabled class="w-full border border-slate-300 rounded-lg p-3 text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary transition-shadow disabled:bg-slate-100 disabled:text-slate-400">
+                        <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">Year</label>
+                        <select id="year-select" required disabled class="w-full border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-primary transition-colors disabled:bg-slate-100 disabled:text-slate-400 disabled:dark:bg-slate-800 disabled:dark:text-slate-500">
                             <option value="" disabled selected>Select Year</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-1">Semester</label>
-                        <select id="semester-select" required disabled class="w-full border border-slate-300 rounded-lg p-3 text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary transition-shadow disabled:bg-slate-100 disabled:text-slate-400">
+                        <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">Semester</label>
+                        <select id="semester-select" required disabled class="w-full border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-primary transition-colors disabled:bg-slate-100 disabled:text-slate-400 disabled:dark:bg-slate-800 disabled:dark:text-slate-500">
                             <option value="" disabled selected>Select Semester</option>
                         </select>
                     </div>
                 </div>
                 <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-1">Section</label>
-                    <select id="section-select" required disabled class="w-full border border-slate-300 rounded-lg p-3 text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary transition-shadow disabled:bg-slate-100 disabled:text-slate-400">
+                    <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">Section</label>
+                    <select id="section-select" required disabled class="w-full border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-primary transition-colors disabled:bg-slate-100 disabled:text-slate-400 disabled:dark:bg-slate-800 disabled:dark:text-slate-500">
                         <option value="" disabled selected>Select Section</option>
                     </select>
                 </div>
@@ -109,88 +129,105 @@
     </div>
 
     <!-- Dashboard Screen -->
-    <div id="dashboard-screen" class="hidden flex-1 flex flex-col h-full w-full">
-        <header class="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-10">
+    <div id="dashboard-screen" class="hidden flex-1 flex flex-col h-full w-full transition-colors duration-300">
+        <header class="bg-white dark:bg-slate-800 shadow-sm border-b border-slate-200 dark:border-slate-700 sticky top-0 z-10 transition-colors">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between relative">
                 <div class="flex items-center gap-2">
                     <div class="w-8 h-8 bg-primary text-white rounded-lg flex items-center justify-center font-bold text-xl">N</div>
                     <h1 class="text-2xl font-extrabold text-primary tracking-tight">OnlyNotes</h1>
                 </div>
                 
-            <div class="absolute right-4 top-3 sm:right-6 lg:right-8 cursor-pointer hover:ring-2 hover:ring-primary rounded-full transition-all" onclick="handleProfileClick()">
-                <div class="w-10 h-10 bg-slate-300 rounded-full flex items-center justify-center text-xl overflow-hidden shadow-md border border-slate-200">
-                    <img id="header-avatar" src="" class="w-full h-full object-cover hidden" />
-                    <span id="header-avatar-emoji">👤</span>
+            <!-- Header Right Section: Toggle + Profile Icon -->
+            <div class="absolute right-4 top-3 sm:right-6 lg:right-8 flex items-center gap-3 z-20">
+                
+                <!-- Dashboard Dark Mode Toggle -->
+                <button class="theme-toggle p-2 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 shadow-sm hover:ring-2 hover:ring-primary transition-all focus:outline-none">
+                    <svg class="theme-toggle-dark-icon hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+                    <svg class="theme-toggle-light-icon hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+                </button>
+
+                <!-- Profile Avatar -->
+                <div class="cursor-pointer hover:ring-2 hover:ring-primary rounded-full transition-all" onclick="handleProfileClick()">
+                    <div class="w-10 h-10 bg-slate-300 dark:bg-slate-600 rounded-full flex items-center justify-center text-xl overflow-hidden shadow-md border border-slate-200 dark:border-slate-600">
+                        <img id="header-avatar" src="" class="w-full h-full object-cover hidden" />
+                        <span id="header-avatar-emoji">👤</span>
+                    </div>
                 </div>
             </div>
             
             <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex gap-6 overflow-x-auto no-scrollbar">
                 <button onclick="switchTab('notes')" id="nav-notes" class="nav-btn text-primary font-bold border-b-2 border-primary py-3 px-2 whitespace-nowrap transition-colors">Class Notes</button>
-                <button onclick="switchTab('lab')" id="nav-lab" class="nav-btn text-slate-500 hover:text-primary font-medium py-3 px-2 whitespace-nowrap transition-colors">Lab Files</button>
-                <button onclick="switchTab('pyq')" id="nav-pyq" class="nav-btn text-slate-500 hover:text-primary font-medium py-3 px-2 whitespace-nowrap transition-colors">Exam Zone</button>
+                <button onclick="switchTab('lab')" id="nav-lab" class="nav-btn text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-primary font-medium py-3 px-2 whitespace-nowrap transition-colors">Lab Files</button>
+                <button onclick="switchTab('pyq')" id="nav-pyq" class="nav-btn text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-primary font-medium py-3 px-2 whitespace-nowrap transition-colors">Exam Zone</button>
+                <button onclick="switchTab('written')" id="nav-written" class="nav-btn text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-primary font-medium py-3 px-2 whitespace-nowrap transition-colors">Get it Written</button>
             </nav>
         </header>
 
-        <main class="flex-1 overflow-y-auto bg-background p-4 sm:p-6 lg:p-8">
+        <main class="flex-1 overflow-y-auto bg-background dark:bg-slate-900 p-4 sm:p-6 lg:p-8 transition-colors">
             <div class="max-w-7xl mx-auto h-full">
                 
                 <!-- NOTES VIEW -->
                 <div id="view-notes" class="view-section animate-fade-in">
                     <div class="flex justify-between items-center mb-6">
-                        <div class="flex gap-2 bg-slate-200 p-1 rounded-lg w-max">
-                            <button id="tier-paid-notes" onclick="setTier('notes', 'paid')" class="bg-white text-dark font-bold px-4 py-1.5 rounded-md shadow-sm text-sm transition-all">Paid Tier</button>
-                            <button id="tier-free-notes" onclick="setTier('notes', 'free')" class="text-slate-600 font-medium px-4 py-1.5 rounded-md text-sm hover:text-slate-900 transition-all">Free Tier</button>
+                        <div class="flex gap-2 bg-slate-200 dark:bg-slate-700 p-1 rounded-lg w-max transition-colors">
+                            <button id="tier-paid-notes" onclick="setTier('notes', 'paid')" class="bg-white dark:bg-slate-600 text-dark dark:text-white font-bold px-4 py-1.5 rounded-md shadow-sm text-sm transition-all">Paid Tier</button>
+                            <button id="tier-free-notes" onclick="setTier('notes', 'free')" class="text-slate-600 dark:text-slate-400 font-medium px-4 py-1.5 rounded-md text-sm hover:text-slate-900 dark:hover:text-white transition-all">Free Tier</button>
                         </div>
                         <button onclick="openUploadModal('note')" class="bg-primary hover:bg-dark text-white font-bold px-4 py-2 rounded-lg text-sm shadow-sm transition-all">+ Upload Note</button>
                     </div>
-                    <h2 class="text-xl font-bold text-slate-800 mb-4">Class Notes</h2>
+                    <h2 class="text-xl font-bold text-slate-800 dark:text-white mb-4">Class Notes</h2>
                     <div id="notes-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
                 </div>
 
-                <!-- LAB FILES VIEW -->
+                <!-- LAB FILES VIEW (Now strictly a marketplace) -->
                 <div id="view-lab" class="view-section hidden h-full flex flex-col animate-fade-in">
-                    <div class="bg-gradient-to-r from-dark to-primary rounded-2xl p-6 md:p-8 mb-8 text-white shadow-lg relative overflow-hidden">
-                        <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
-                            <div>
-                                <h2 class="text-2xl md:text-3xl font-extrabold mb-2">Get Your Lab Files Written!</h2>
-                                <p class="text-blue-100 font-medium mb-4 max-w-xl">Short on time? Let a peer handle your lab files for a fair price!</p>
-                                <button onclick="handleAction('Request Lab File', 'Opening AI Image Uploader to quote your diagrams...')" class="bg-white text-dark font-bold px-6 py-2.5 rounded-lg shadow-md hover:bg-blue-50 transition-colors transform hover:-translate-y-0.5">Request Service</button>
-                            </div>
-                        </div>
-                        <div class="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-white opacity-10 rounded-full blur-2xl"></div>
-                    </div>
                     <div class="flex justify-between items-center mb-6">
-                        <div class="flex gap-2 bg-slate-200 p-1 rounded-lg w-max">
-                            <button id="tier-paid-lab" onclick="setTier('lab', 'paid')" class="bg-white text-dark font-bold px-4 py-1.5 rounded-md shadow-sm text-sm transition-all">Paid Tier</button>
-                            <button id="tier-free-lab" onclick="setTier('lab', 'free')" class="text-slate-600 font-medium px-4 py-1.5 rounded-md text-sm hover:text-slate-900 transition-all">Free Tier</button>
+                        <div class="flex gap-2 bg-slate-200 dark:bg-slate-700 p-1 rounded-lg w-max transition-colors">
+                            <button id="tier-paid-lab" onclick="setTier('lab', 'paid')" class="bg-white dark:bg-slate-600 text-dark dark:text-white font-bold px-4 py-1.5 rounded-md shadow-sm text-sm transition-all">Paid Tier</button>
+                            <button id="tier-free-lab" onclick="setTier('lab', 'free')" class="text-slate-600 dark:text-slate-400 font-medium px-4 py-1.5 rounded-md text-sm hover:text-slate-900 dark:hover:text-white transition-all">Free Tier</button>
                         </div>
                         <button onclick="openUploadModal('lab')" class="bg-primary hover:bg-dark text-white font-bold px-4 py-2 rounded-lg text-sm shadow-sm transition-all">+ Upload Lab File</button>
                     </div>
-                    <h2 class="text-xl font-bold text-slate-800 mb-4">Completed Lab Files for Sale</h2>
-                    <div id="lab-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
+                    <h2 class="text-xl font-bold text-slate-800 dark:text-white mb-4">Completed Lab Files for Sale</h2>
+                    <div id="lab-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12"></div>
+                </div>
+
+                <!-- GET IT WRITTEN VIEW (The new gig board) -->
+                <div id="view-written" class="view-section hidden h-full flex flex-col animate-fade-in">
+                    <div class="max-w-4xl w-full">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-2xl font-bold text-slate-800 dark:text-white">Open Writing Requests</h2>
+                            <button onclick="handleAction('New Request', 'Opening request form...')" class="bg-primary hover:bg-dark text-white font-bold px-4 py-2 rounded-lg text-sm shadow-sm transition-all">+ Post Request</button>
+                        </div>
+                        
+                        <!-- The grid where JS will render the OPEN gig cards -->
+                        <div id="gig-board" class="grid grid-cols-1 md:grid-cols-2 gap-6 pb-12">
+                            <!-- Cards inject here -->
+                        </div>
+                    </div>
                 </div>
 
                 <!-- EXAM ZONE (PYQs) VIEW -->
                 <div id="view-pyq" class="view-section hidden animate-fade-in">
                     <div class="flex justify-between items-center mb-6">
-                        <div class="flex gap-2 bg-slate-200 p-1 rounded-lg w-max">
-                            <button id="tier-paid-pyq" onclick="setTier('pyq', 'paid')" class="bg-white text-dark font-bold px-4 py-1.5 rounded-md shadow-sm text-sm transition-all">Paid Tier</button>
-                            <button id="tier-free-pyq" onclick="setTier('pyq', 'free')" class="text-slate-600 font-medium px-4 py-1.5 rounded-md text-sm hover:text-slate-900 transition-all">Free Tier</button>
+                        <div class="flex gap-2 bg-slate-200 dark:bg-slate-700 p-1 rounded-lg w-max transition-colors">
+                            <button id="tier-paid-pyq" onclick="setTier('pyq', 'paid')" class="bg-white dark:bg-slate-600 text-dark dark:text-white font-bold px-4 py-1.5 rounded-md shadow-sm text-sm transition-all">Paid Tier</button>
+                            <button id="tier-free-pyq" onclick="setTier('pyq', 'free')" class="text-slate-600 dark:text-slate-400 font-medium px-4 py-1.5 rounded-md text-sm hover:text-slate-900 dark:hover:text-white transition-all">Free Tier</button>
                         </div>
                         <button onclick="openUploadModal('pyq')" class="bg-primary hover:bg-dark text-white font-bold px-4 py-2 rounded-lg text-sm shadow-sm transition-all">+ Upload PYQ</button>
                     </div>
-                    <h2 class="text-xl font-bold text-slate-800 mb-4">Exam Zone (Past Papers)</h2>
+                    <h2 class="text-xl font-bold text-slate-800 dark:text-white mb-4">Exam Zone (Past Papers)</h2>
                     <div id="pyq-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
                 </div>
 
                 <!-- PROFILE VIEW -->
                 <div id="view-profile" class="view-section hidden flex-col animate-fade-in pb-10">
-                    <div class="max-w-4xl mx-auto w-full bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mt-6">
-                        <h2 class="text-2xl font-bold text-slate-800 mb-6 border-b border-slate-100 pb-4">Profile Settings</h2>
+                    <div class="max-w-4xl mx-auto w-full bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 p-6 md:p-8 mt-6 transition-colors">
+                        <h2 class="text-2xl font-bold text-slate-800 dark:text-white mb-6 border-b border-slate-100 dark:border-slate-700 pb-4">Profile Settings</h2>
                         <div class="flex flex-col md:flex-row gap-8 items-start">
                             
                             <div class="relative group cursor-pointer rounded-full" onclick="document.getElementById('avatar-upload').click()">
-                                <div class="w-28 h-28 bg-slate-200 rounded-full flex items-center justify-center overflow-hidden border-4 border-white shadow-lg">
+                                <div class="w-28 h-28 bg-slate-200 dark:bg-slate-700 rounded-full flex items-center justify-center overflow-hidden border-4 border-white dark:border-slate-800 shadow-lg transition-colors">
                                     <img id="profile-avatar-img" src="" class="w-full h-full object-cover hidden" />
                                     <span id="profile-avatar-placeholder" class="text-4xl">👤</span>
                                 </div>
@@ -200,33 +237,33 @@
 
                             <div class="flex-1 space-y-5 w-full">
                                 <div>
-                                    <label class="block text-sm font-semibold text-slate-700 mb-1">Username</label>
+                                    <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">Username</label>
                                     <div id="username-display-mode" class="flex items-center gap-3">
-                                        <span id="profile-username-text" class="text-lg font-bold text-slate-900">N/A</span>
+                                        <span id="profile-username-text" class="text-lg font-bold text-slate-900 dark:text-white">N/A</span>
                                         <button onclick="toggleUsernameEdit(true)" class="text-slate-400 hover:text-primary transition-colors" title="Edit Username">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
                                         </button>
                                     </div>
                                     <div id="username-edit-mode" class="hidden gap-2">
-                                        <input type="text" id="profile-username-input" placeholder="Enter a username..." class="flex-1 border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-primary outline-none">
+                                        <input type="text" id="profile-username-input" placeholder="Enter a username..." class="flex-1 border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-primary outline-none transition-colors">
                                         <button onclick="saveProfile()" class="bg-primary hover:bg-dark text-white font-bold px-4 py-2.5 rounded-lg text-sm transition-all shadow-sm">Save</button>
-                                        <button onclick="toggleUsernameEdit(false)" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold px-4 py-2.5 rounded-lg text-sm transition-all shadow-sm">Cancel</button>
+                                        <button onclick="toggleUsernameEdit(false)" class="bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold px-4 py-2.5 rounded-lg text-sm transition-all shadow-sm">Cancel</button>
                                     </div>
                                 </div>
-                                <!-- REPLACED RANK SYSTEM WITH SELLER RATING -->
+                                
                                 <div>
-                                    <h4 class="text-sm font-semibold text-slate-700 mb-1">Your Seller Rating</h4>
-                                    <div class="bg-slate-50 border border-slate-200 rounded-lg p-4 flex items-center justify-between">
+                                    <h4 class="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">Your Seller Rating</h4>
+                                    <div class="bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg p-4 flex items-center justify-between transition-colors">
                                         <div class="flex items-center gap-2">
                                             <span class="text-2xl text-yellow-400">★</span>
-                                            <span class="font-extrabold text-slate-900 text-xl" id="profile-rating-avg">New</span>
+                                            <span class="font-extrabold text-slate-900 dark:text-white text-xl" id="profile-rating-avg">New</span>
                                         </div>
-                                        <span class="text-sm font-bold text-slate-500" id="profile-rating-count">0 Reviews</span>
+                                        <span class="text-sm font-bold text-slate-500 dark:text-slate-400" id="profile-rating-count">0 Reviews</span>
                                     </div>
                                 </div>
                                 <div class="pt-2 flex flex-wrap gap-3">
-                                    <button onclick="handleLogout()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-5 py-2 rounded-lg text-sm transition-all border border-slate-200 shadow-sm">Log Out</button>
-                                    <button onclick="handleDeleteAccount()" class="text-red-500 hover:text-white hover:bg-red-500 font-bold px-4 py-2 rounded-lg text-sm transition-all border border-red-200 hover:border-red-500">Delete Account</button>
+                                    <button onclick="handleLogout()" class="bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 font-bold px-5 py-2 rounded-lg text-sm transition-all border border-slate-200 dark:border-slate-600 shadow-sm">Log Out</button>
+                                    <button onclick="handleDeleteAccount()" class="text-red-500 hover:text-white hover:bg-red-500 font-bold px-4 py-2 rounded-lg text-sm transition-all border border-red-200 dark:border-red-800 hover:border-red-500">Delete Account</button>
                                 </div>
                             </div>
                         </div>
@@ -234,55 +271,63 @@
 
                     <!-- My Uploads Section -->
                     <div class="max-w-4xl mx-auto w-full mt-8">
-                        <h2 class="text-2xl font-bold text-slate-800 mb-4">My Uploads</h2>
+                        <h2 class="text-2xl font-bold text-slate-800 dark:text-white mb-4">My Uploads</h2>
                         <div id="my-uploads-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <p class="text-slate-500 text-sm">Loading your uploads...</p>
+                            <p class="text-slate-500 dark:text-slate-400 text-sm">Loading your uploads...</p>
                         </div>
                     </div>
 
                     <!-- Library & Activity -->
                     <div class="max-w-4xl mx-auto w-full mt-8">
-                        <h2 class="text-2xl font-bold text-slate-800 mb-6">Library & Activity</h2>
+                        <h2 class="text-2xl font-bold text-slate-800 dark:text-white mb-6">Library & Activity</h2>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
-                                <h3 class="font-extrabold text-lg text-slate-900 mb-4 border-b border-slate-100 pb-2">Class Notes</h3>
+                            <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5 transition-colors">
+                                <h3 class="font-extrabold text-lg text-slate-900 dark:text-white mb-4 border-b border-slate-100 dark:border-slate-700 pb-2">Class Notes</h3>
                                 <div class="space-y-4">
                                     <div>
-                                        <h4 class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Saved (Free Tier)</h4>
-                                        <div class="space-y-2 text-sm text-slate-600" id="library-free-notes">No saved items yet.</div>
+                                        <h4 class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2">Saved (Free Tier)</h4>
+                                        <div class="space-y-2 text-sm text-slate-600 dark:text-slate-300" id="library-free-notes">No saved items yet.</div>
                                     </div>
                                     <div>
                                         <h4 class="text-[10px] font-bold text-primary uppercase tracking-wider mb-2">Purchased (Paid Tier)</h4>
-                                        <div class="space-y-2 text-sm text-slate-600" id="library-paid-notes">No purchases yet.</div>
+                                        <div class="space-y-2 text-sm text-slate-600 dark:text-slate-300" id="library-paid-notes">No purchases yet.</div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
-                                <h3 class="font-extrabold text-lg text-slate-900 mb-4 border-b border-slate-100 pb-2">Lab Files</h3>
+                            <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5 transition-colors">
+                                <h3 class="font-extrabold text-lg text-slate-900 dark:text-white mb-4 border-b border-slate-100 dark:border-slate-700 pb-2">Lab Files</h3>
                                 <div class="space-y-4">
                                     <div>
-                                        <h4 class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Saved (Free Tier)</h4>
-                                        <div class="space-y-2 text-sm text-slate-600" id="library-free-labs">No saved items yet.</div>
+                                        <h4 class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2">Saved (Free Tier)</h4>
+                                        <div class="space-y-2 text-sm text-slate-600 dark:text-slate-300" id="library-free-labs">No saved items yet.</div>
                                     </div>
                                     <div>
                                         <h4 class="text-[10px] font-bold text-primary uppercase tracking-wider mb-2">Purchased (Paid Tier)</h4>
-                                        <div class="space-y-2 text-sm text-slate-600" id="library-paid-labs">No purchases yet.</div>
+                                        <div class="space-y-2 text-sm text-slate-600 dark:text-slate-300" id="library-paid-labs">No purchases yet.</div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
-                                <h3 class="font-extrabold text-lg text-slate-900 mb-4 border-b border-slate-100 pb-2">Exam Zone</h3>
+                            <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5 transition-colors">
+                                <h3 class="font-extrabold text-lg text-slate-900 dark:text-white mb-4 border-b border-slate-100 dark:border-slate-700 pb-2">Exam Zone</h3>
                                 <div class="space-y-4">
                                     <div>
-                                        <h4 class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Saved (Free Tier)</h4>
-                                        <div class="space-y-2 text-sm text-slate-600" id="library-free-pyqs">No saved items yet.</div>
+                                        <h4 class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2">Saved (Free Tier)</h4>
+                                        <div class="space-y-2 text-sm text-slate-600 dark:text-slate-300" id="library-free-pyqs">No saved items yet.</div>
                                     </div>
                                     <div>
                                         <h4 class="text-[10px] font-bold text-primary uppercase tracking-wider mb-2">Purchased (Paid Tier)</h4>
-                                        <div class="space-y-2 text-sm text-slate-600" id="library-paid-pyqs">No purchases yet.</div>
+                                        <div class="space-y-2 text-sm text-slate-600 dark:text-slate-300" id="library-paid-pyqs">No purchases yet.</div>
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+
+                    <!-- My Active Gigs Section (Moved here from main page) -->
+                    <div class="max-w-4xl mx-auto w-full mt-8 mb-8">
+                        <h2 class="text-2xl font-bold text-slate-800 dark:text-white mb-6">My Active Gigs</h2>
+                        <div id="profile-gigs-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- In Progress / Review cards inject here -->
                         </div>
                     </div>
                 </div>
@@ -292,36 +337,36 @@
 
     <!-- Upload Modal -->
     <div id="upload-modal" class="fixed inset-0 bg-slate-900 bg-opacity-50 z-50 hidden flex items-center justify-center backdrop-blur-sm transition-opacity duration-300">
-        <div class="bg-white rounded-xl shadow-2xl p-6 max-w-md w-full mx-4">
-            <h3 class="text-xl font-bold text-dark mb-4" id="upload-modal-title">Upload Academic Material</h3>
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-2xl p-6 max-w-md w-full mx-4 transition-colors">
+            <h3 class="text-xl font-bold text-dark dark:text-white mb-4" id="upload-modal-title">Upload Academic Material</h3>
             <form id="upload-form" class="space-y-4">
                 <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-1">Title</label>
-                    <input type="text" id="upload-title" placeholder="e.g., Data Structures Module 1" required class="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-primary outline-none">
+                    <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">Title</label>
+                    <input type="text" id="upload-title" placeholder="e.g., Data Structures Module 1" required class="w-full border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-primary outline-none transition-colors">
                 </div>
                 <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-1">Description / Details</label>
-                    <input type="text" id="upload-desc" placeholder="e.g., Handwritten notes, Modules 1-5" required class="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-primary outline-none">
+                    <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">Description / Details</label>
+                    <input type="text" id="upload-desc" placeholder="e.g., Handwritten notes, Modules 1-5" required class="w-full border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-primary outline-none transition-colors">
                 </div>
                 <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-1">Note Format</label>
-                    <select id="upload-format" required onchange="handleFormatChange()" class="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-primary outline-none">
+                    <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">Note Format</label>
+                    <select id="upload-format" required onchange="handleFormatChange()" class="w-full border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-primary outline-none transition-colors">
                         <option value="digital" selected>Digital (Max ₹8/pg)</option>
                         <option value="handwritten">Handwritten (Max ₹10/pg)</option>
                         <option value="physical">Physical/Printed (Max ₹20/pg)</option>
                     </select>
                 </div>
                 <div id="price-input-container">
-                    <label id="price-label" class="block text-sm font-semibold text-slate-700 mb-1">Price per page (Max ₹8)</label>
-                    <input type="number" id="upload-price" max="8" min="1" placeholder="8" required class="w-full border border-slate-300 rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-primary outline-none">
+                    <label id="price-label" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">Price per page (Max ₹8)</label>
+                    <input type="number" id="upload-price" max="8" min="1" placeholder="8" required class="w-full border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-primary outline-none transition-colors">
                 </div>
                 <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-1">Select PDF File</label>
-                    <input type="file" id="upload-file-input" accept=".pdf" required class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-primary hover:file:bg-blue-100">
+                    <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">Select PDF File</label>
+                    <input type="file" id="upload-file-input" accept=".pdf" required class="w-full text-sm text-slate-500 dark:text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 dark:file:bg-blue-900/30 file:text-primary hover:file:bg-blue-100 dark:hover:file:bg-blue-900/50 transition-colors">
                 </div>
                 <div class="flex gap-2 pt-2">
-                    <button type="button" onclick="closeUploadModal()" class="flex-1 bg-slate-200 text-slate-700 font-bold py-2 rounded-lg hover:bg-slate-300 text-sm">Cancel</button>
-                    <button type="submit" class="flex-1 bg-primary text-white font-bold py-2 rounded-lg hover:bg-dark text-sm">Upload File</button>
+                    <button type="button" onclick="closeUploadModal()" class="flex-1 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold py-2 rounded-lg hover:bg-slate-300 dark:hover:bg-slate-600 text-sm transition-colors">Cancel</button>
+                    <button type="submit" class="flex-1 bg-primary text-white font-bold py-2 rounded-lg hover:bg-dark text-sm transition-colors">Upload File</button>
                 </div>
             </form>
         </div>
@@ -330,13 +375,58 @@
     <!-- Supabase Core Script -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-      const { createClient } = supabase;
-      const supabaseUrl = 'https://reizivfwohfzzuxkrbcr.supabase.co';
-      const supabaseKey = 'sb_publishable_8y1FZpS8O2oZptMj8OjW-A_LnxmGRWF';
-      const _supabase = createClient(supabaseUrl, supabaseKey);
+        const { createClient } = supabase;
+        const supabaseUrl = 'https://reizivfwohfzzuxkrbcr.supabase.co';
+        const supabaseKey = 'sb_publishable_8y1FZpS8O2oZptMj8OjW-A_LnxmGRWF';
+        const _supabase = createClient(supabaseUrl, supabaseKey);
     </script>
 
     <script>
+        // ==========================================
+        // THEME TOGGLE LOGIC
+        // ==========================================
+        const themeToggleBtns = document.querySelectorAll('.theme-toggle');
+
+        function updateIcons() {
+            const isDark = document.documentElement.classList.contains('dark');
+            document.querySelectorAll('.theme-toggle-dark-icon').forEach(icon => {
+                isDark ? icon.classList.add('hidden') : icon.classList.remove('hidden');
+            });
+            document.querySelectorAll('.theme-toggle-light-icon').forEach(icon => {
+                isDark ? icon.classList.remove('hidden') : icon.classList.add('hidden');
+            });
+        }
+
+        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+        updateIcons();
+
+        themeToggleBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (localStorage.getItem('color-theme')) {
+                    if (localStorage.getItem('color-theme') === 'light') {
+                        document.documentElement.classList.add('dark');
+                        localStorage.setItem('color-theme', 'dark');
+                    } else {
+                        document.documentElement.classList.remove('dark');
+                        localStorage.setItem('color-theme', 'light');
+                    }
+                } else {
+                    if (document.documentElement.classList.contains('dark')) {
+                        document.documentElement.classList.remove('dark');
+                        localStorage.setItem('color-theme', 'light');
+                    } else {
+                        document.documentElement.classList.add('dark');
+                        localStorage.setItem('color-theme', 'dark');
+                    }
+                }
+                updateIcons();
+            });
+        });
+
         // ==========================================
         // UTILS & MODALS
         // ==========================================
@@ -431,6 +521,17 @@
             else authMessage.textContent = 'Login successful!';
         });
 
+        document.getElementById('google-login-btn').addEventListener('click', async () => {
+            const { error } = await _supabase.auth.signInWithOAuth({
+                provider: 'google',
+                options: {
+                    // Hardcoded to your exact GitHub Pages URL to prevent routing errors
+                    redirectTo: 'https://dhanjitkd123.github.io/OnlyNotes/' 
+                }
+            });
+            if (error) authMessage.textContent = 'Error: ' + error.message;
+        });
+
         async function handleLogout() {
             const { error } = await _supabase.auth.signOut();
             if (error) {
@@ -480,18 +581,18 @@
                 el.classList.add('hidden'); el.classList.remove('flex', 'flex-col');
             });
             document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('text-primary', 'font-bold', 'border-b-2', 'border-primary');
-                btn.classList.add('text-slate-500', 'font-medium');
+                btn.classList.remove('text-primary', 'dark:text-primary', 'font-bold', 'border-b-2', 'border-primary');
+                btn.classList.add('text-slate-500', 'dark:text-slate-400', 'font-medium');
             });
 
             const selectedView = document.getElementById(`view-${tabId}`);
             selectedView.classList.remove('hidden');
-            if(tabId === 'lab' || tabId === 'profile') selectedView.classList.add('flex', 'flex-col');
+            if(tabId === 'lab' || tabId === 'profile' || tabId === 'written') selectedView.classList.add('flex', 'flex-col');
 
             const activeBtn = document.getElementById(`nav-${tabId}`);
             if(activeBtn) {
-                activeBtn.classList.remove('text-slate-500', 'font-medium');
-                activeBtn.classList.add('text-primary', 'font-bold', 'border-b-2', 'border-primary');
+                activeBtn.classList.remove('text-slate-500', 'dark:text-slate-400', 'font-medium');
+                activeBtn.classList.add('text-primary', 'dark:text-primary', 'font-bold', 'border-b-2', 'border-primary');
             }
             if(tabId === 'profile') loadProfileData();
             else fetchMarketplaceData();
@@ -504,8 +605,8 @@
             const paidBtn = document.getElementById(`tier-paid-${section}`);
             const freeBtn = document.getElementById(`tier-free-${section}`);
             
-            const activeClasses = 'bg-white text-dark font-bold px-4 py-1.5 rounded-md shadow-sm text-sm transition-all';
-            const inactiveClasses = 'text-slate-600 font-medium px-4 py-1.5 rounded-md text-sm hover:text-slate-900 transition-all';
+            const activeClasses = 'bg-white dark:bg-slate-600 text-dark dark:text-white font-bold px-4 py-1.5 rounded-md shadow-sm text-sm transition-all';
+            const inactiveClasses = 'text-slate-600 dark:text-slate-400 font-medium px-4 py-1.5 rounded-md text-sm hover:text-slate-900 dark:hover:text-white transition-all';
             
             if (tier === 'paid') { paidBtn.className = activeClasses; freeBtn.className = inactiveClasses; } 
             else { freeBtn.className = activeClasses; paidBtn.className = inactiveClasses; }
@@ -551,12 +652,10 @@
         }
 
         async function loadUserLibrary(userId) {
-            // Load Bookmarks (Free items)
             const { data: bookmarks } = await _supabase.from('bookmarks').select('*').eq('user_id', userId);
             bookmarkedItemIds.clear();
             if (bookmarks) bookmarks.forEach(b => bookmarkedItemIds.add(b.item_id));
 
-            // Load Purchases (Paid items)
             const { data: purchases } = await _supabase.from('purchases').select('*').eq('user_id', userId);
             purchasedItemIds.clear();
             if (purchases) purchases.forEach(p => purchasedItemIds.add(p.item_id));
@@ -604,7 +703,6 @@
             if(!user) return alert("Please log in to rate.");
             if(user.id === sellerId) return alert("You cannot rate your own upload.");
 
-            // Clear old rating first to act as pure upsert fallback
             await _supabase.from('ratings').delete().eq('user_id', user.id).eq('item_id', itemId);
             const { error } = await _supabase.from('ratings').insert([{
                 user_id: user.id, item_id: itemId, seller_id: sellerId, category: category, rating: rating
@@ -615,18 +713,11 @@
         }
 
         function renderProfileLibrary(bookmarks, purchases) {
-            const freeNotesContainer = document.getElementById('library-free-notes');
-            const freeLabsContainer = document.getElementById('library-free-labs');
-            const freePyqsContainer = document.getElementById('library-free-pyqs');
-            const paidNotesContainer = document.getElementById('library-paid-notes');
-            const paidLabsContainer = document.getElementById('library-paid-labs');
-            const paidPyqsContainer = document.getElementById('library-paid-pyqs');
-
             const buildHTML = (items, type) => {
                 if(!items || items.length === 0) return 'No saved items yet.';
                 return `<div class="space-y-2">` + items.map(b => `
-                    <div class="flex justify-between items-center bg-slate-50 p-2 rounded border border-slate-100">
-                        <span class="truncate font-medium text-xs text-slate-800 flex-1 pr-2" title="${b.title}">${b.title}</span>
+                    <div class="flex justify-between items-center bg-slate-50 dark:bg-slate-700 p-2 rounded border border-slate-100 dark:border-slate-600 transition-colors">
+                        <span class="truncate font-medium text-xs text-slate-800 dark:text-slate-200 flex-1 pr-2" title="${b.title}">${b.title}</span>
                         <div class="flex items-center gap-2 shrink-0">
                             <button onclick="openPdf('${b.file_url}')" class="text-primary hover:text-dark hover:underline text-xs font-bold transition-colors">View</button>
                             ${type === 'free' ? `<button onclick="toggleBookmark('${b.item_id}', '${b.category}', '${b.title.replace(/'/g, "\\'")}', '${b.file_url}')" class="text-slate-400 hover:text-red-500 font-bold text-sm transition-colors px-1" title="Remove">✕</button>` : ''}
@@ -635,13 +726,13 @@
                 `).join('') + `</div>`;
             };
 
-            freeNotesContainer.innerHTML = buildHTML((bookmarks||[]).filter(b => b.category === 'notes'), 'free');
-            freeLabsContainer.innerHTML = buildHTML((bookmarks||[]).filter(b => b.category === 'lab_files'), 'free');
-            freePyqsContainer.innerHTML = buildHTML((bookmarks||[]).filter(b => b.category === 'pyqs'), 'free');
+            document.getElementById('library-free-notes').innerHTML = buildHTML((bookmarks||[]).filter(b => b.category === 'notes'), 'free');
+            document.getElementById('library-free-labs').innerHTML = buildHTML((bookmarks||[]).filter(b => b.category === 'lab_files'), 'free');
+            document.getElementById('library-free-pyqs').innerHTML = buildHTML((bookmarks||[]).filter(b => b.category === 'pyqs'), 'free');
             
-            paidNotesContainer.innerHTML = buildHTML((purchases||[]).filter(p => p.category === 'notes'), 'paid');
-            paidLabsContainer.innerHTML = buildHTML((purchases||[]).filter(p => p.category === 'lab_files'), 'paid');
-            paidPyqsContainer.innerHTML = buildHTML((purchases||[]).filter(p => p.category === 'pyqs'), 'paid');
+            document.getElementById('library-paid-notes').innerHTML = buildHTML((purchases||[]).filter(p => p.category === 'notes'), 'paid');
+            document.getElementById('library-paid-labs').innerHTML = buildHTML((purchases||[]).filter(p => p.category === 'lab_files'), 'paid');
+            document.getElementById('library-paid-pyqs').innerHTML = buildHTML((purchases||[]).filter(p => p.category === 'pyqs'), 'paid');
         }
 
         async function loadMyUploads(userId) {
@@ -656,21 +747,21 @@
 
             const allMyUploads = [...(myNotes||[]).map(i => ({...i, category: 'notes', label: 'Note'})), ...(myLabs||[]).map(i => ({...i, category: 'lab_files', label: 'Lab'})), ...(myPyqs||[]).map(i => ({...i, category: 'pyqs', label: 'PYQ'}))];
 
-            if (allMyUploads.length === 0) return container.innerHTML = `<p class="text-slate-500 text-sm col-span-2">You haven't uploaded any materials yet.</p>`;
+            if (allMyUploads.length === 0) return container.innerHTML = `<p class="text-slate-500 dark:text-slate-400 text-sm col-span-2">You haven't uploaded any materials yet.</p>`;
 
             container.innerHTML = allMyUploads.map(item => `
-                <div id="upload-card-${item.id}" class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 flex flex-col justify-between">
+                <div id="upload-card-${item.id}" class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-4 flex flex-col justify-between transition-colors">
                     <div>
                         <div class="flex justify-between items-start mb-1">
-                            <h3 class="font-bold text-slate-900 truncate">${item.title}</h3>
-                            <span class="text-[10px] font-bold bg-blue-50 text-primary px-2 py-0.5 rounded uppercase">${item.label}</span>
+                            <h3 class="font-bold text-slate-900 dark:text-white truncate">${item.title}</h3>
+                            <span class="text-[10px] font-bold bg-blue-50 dark:bg-blue-900/30 text-primary px-2 py-0.5 rounded uppercase">${item.label}</span>
                         </div>
-                        <p class="text-xs text-slate-500 mb-3">${item.description || 'No description'}</p>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mb-3">${item.description || 'No description'}</p>
                     </div>
-                    <div class="flex items-center justify-between pt-3 border-t border-slate-100">
-                        <span class="text-xs font-bold text-slate-700">${item.price_per_page > 0 ? `₹${item.price_per_page}/pg` : 'Free'}</span>
+                    <div class="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-700">
+                        <span class="text-xs font-bold text-slate-700 dark:text-slate-300">${item.price_per_page > 0 ? `₹${item.price_per_page}/pg` : 'Free'}</span>
                         <div class="flex gap-2">
-                            <button onclick="deleteMyUpload('${item.category}', '${item.id}', '${item.file_url}')" class="text-xs bg-red-50 hover:bg-red-100 text-red-600 font-semibold px-3 py-1.5 rounded-lg transition-colors">Delete</button>
+                            <button onclick="deleteMyUpload('${item.category}', '${item.id}', '${item.file_url}')" class="text-xs bg-red-50 dark:bg-red-900/30 hover:bg-red-100 dark:hover:bg-red-900/50 text-red-600 dark:text-red-400 font-semibold px-3 py-1.5 rounded-lg transition-colors">Delete</button>
                         </div>
                     </div>
                 </div>
@@ -703,7 +794,6 @@
 
             const { data: { user } } = await _supabase.auth.getUser();
             
-            // Sync Bookmarks & Purchases & Ratings
             if (user) {
                 const [{ data: bData }, { data: pData }] = await Promise.all([
                     _supabase.from('bookmarks').select('item_id').eq('user_id', user.id),
@@ -732,7 +822,7 @@
                 const filtered = items.filter(i => isPaid ? i.price_per_page > 0 : (!i.price_per_page || i.price_per_page === 0));
                 
                 if(filtered.length === 0) {
-                    grid.innerHTML = `<p class="text-slate-500 text-sm">No ${isPaid ? 'paid' : 'free'} items available.</p>`;
+                    grid.innerHTML = `<p class="text-slate-500 dark:text-slate-400 text-sm">No ${isPaid ? 'paid' : 'free'} items available.</p>`;
                     return;
                 }
 
@@ -743,28 +833,27 @@
                     const avg = itemAvgRatings[item.id] ? (itemAvgRatings[item.id].sum / itemAvgRatings[item.id].count).toFixed(1) : 'New';
                     const count = itemAvgRatings[item.id] ? itemAvgRatings[item.id].count : 0;
                     
-                    // Rating visibility rules
                     const canRate = (!isPaid && isBookmarked) || (isPaid && isPurchased);
 
                     return `
-                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden p-4 flex flex-col relative">
+                    <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden p-4 flex flex-col relative transition-colors">
                         ${!isPaid ? `
                         <button onclick="toggleBookmark('${item.id}', '${categoryName}', '${item.title.replace(/'/g, "\\'")}', '${item.file_url}')" class="absolute top-4 right-4 text-xl transition-transform hover:scale-110">
                             ${isBookmarked ? '🔖' : '📑'}
                         </button>` : ''}
                         
                         <div class="flex justify-between items-center mb-1">
-                            <h3 class="font-bold text-slate-900 truncate pr-6">${item.title}</h3>
+                            <h3 class="font-bold text-slate-900 dark:text-white truncate pr-6">${item.title}</h3>
                         </div>
-                        <div class="flex items-center gap-1 text-xs font-bold text-slate-600 bg-slate-50 w-max px-2 py-1 rounded mb-2">
+                        <div class="flex items-center gap-1 text-xs font-bold text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-700 w-max px-2 py-1 rounded mb-2 transition-colors">
                             <span class="text-yellow-500 text-sm">★</span> ${avg} <span class="font-normal opacity-70">(${count})</span>
                         </div>
                         
-                        <p class="text-sm text-slate-500 mb-4 flex-1">${item.description || 'Verified Material'}</p>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mb-4 flex-1">${item.description || 'Verified Material'}</p>
                         
                         ${isPaid ? `
                             <div class="flex justify-between items-center mb-3">
-                                <span class="text-lg font-extrabold text-dark">₹${item.price_per_page}/pg</span>
+                                <span class="text-lg font-extrabold text-dark dark:text-primary">₹${item.price_per_page}/pg</span>
                             </div>
                             ${isPurchased || item.seller_id === user?.id ? `
                                 <button onclick="openPdf('${item.file_url}')" class="w-full block text-center bg-emerald-600 text-white font-semibold py-1.5 rounded-lg hover:bg-emerald-700 text-sm transition-colors mb-2">View PDF</button>
@@ -774,23 +863,23 @@
                                 ` : `
                                     <div class="flex gap-2 mb-2">
                                         <button onclick="handlePurchase('${item.id}', '${item.seller_id}', '${categoryName}', '${item.title.replace(/'/g, "\\'")}', ${item.price_per_page}, '${item.file_url}')" class="flex-1 block text-center bg-dark text-white font-semibold py-1.5 rounded-lg hover:bg-primary text-sm transition-colors">Buy</button>
-                                        <button onclick="handleAction('Bargain', 'Opening chat to bargain for ${item.title.replace(/'/g, "\\'")}...')" class="flex-1 block text-center bg-slate-200 text-slate-800 font-semibold py-1.5 rounded-lg hover:bg-slate-300 text-sm transition-colors">Bargain</button>
+                                        <button onclick="handleAction('Bargain', 'Opening chat to bargain for ${item.title.replace(/'/g, "\\'")}...')" class="flex-1 block text-center bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200 font-semibold py-1.5 rounded-lg hover:bg-slate-300 dark:hover:bg-slate-600 text-sm transition-colors">Bargain</button>
                                     </div>
                                 `}
                             `}
                         ` : `
                             <div class="flex justify-between items-center mb-3">
-                                <span class="text-lg font-extrabold text-emerald-600">Free</span>
+                                <span class="text-lg font-extrabold text-emerald-600 dark:text-emerald-400">Free</span>
                             </div>
                             <button onclick="openPdf('${item.file_url}')" class="w-full block text-center bg-primary text-white font-semibold py-1.5 rounded-lg hover:bg-dark text-sm transition-colors mb-2">View PDF</button>
                         `}
 
                         ${canRate ? `
-                        <div class="pt-3 border-t border-slate-100 flex items-center justify-between mt-auto">
-                            <span class="text-xs font-bold text-slate-500">Rate:</span>
+                        <div class="pt-3 border-t border-slate-100 dark:border-slate-700 flex items-center justify-between mt-auto transition-colors">
+                            <span class="text-xs font-bold text-slate-500 dark:text-slate-400">Rate:</span>
                             <div class="flex items-center gap-1">
                                 ${[1,2,3,4,5].map(star => `
-                                    <button onclick="submitRating('${item.id}', '${item.seller_id}', '${categoryName}', ${star})" class="text-xl ${star <= myRating ? 'text-yellow-400' : 'text-slate-200'} hover:text-yellow-500 transition-colors">★</button>
+                                    <button onclick="submitRating('${item.id}', '${item.seller_id}', '${categoryName}', ${star})" class="text-xl ${star <= myRating ? 'text-yellow-400' : 'text-slate-200 dark:text-slate-600'} hover:text-yellow-500 transition-colors">★</button>
                                 `).join('')}
                             </div>
                         </div>
@@ -808,13 +897,13 @@
             renderCards(p || [], 'pyq-grid', 'pyqs', currentTiers.pyq === 'paid');
         }
         
-        // ... (Remaining profile saving utils remain untouched)
         function toggleUsernameEdit(showEdit) {
             const displayMode = document.getElementById('username-display-mode');
             const editMode = document.getElementById('username-edit-mode');
             if (showEdit) { displayMode.classList.add('hidden'); editMode.classList.remove('hidden'); editMode.classList.add('flex'); } 
             else { displayMode.classList.remove('hidden'); editMode.classList.add('hidden'); editMode.classList.remove('flex'); }
         }
+        
         async function saveProfile() {
             const { data: { user } } = await _supabase.auth.getUser();
             if (!user) return;
@@ -827,12 +916,9 @@
         async function handleAvatarUpload(event) {
             try {
                 const file = event.target.files[0];
-                if (!file) return; // Exit if they closed the window without picking a file
-
-                // 1. Immediately trigger the modal so we know the button works
+                if (!file) return; 
                 handleAction("Uploading...", "Please wait while we update your avatar.");
 
-                // 2. Verify user is actually logged in
                 const { data: { user } } = await _supabase.auth.getUser();
                 if (!user) {
                     alert("Session missing! Please log out and back in.");
@@ -842,53 +928,45 @@
                 const fileExt = file.name.split('.').pop();
                 const filePath = `${user.id}.${fileExt}`;
 
-                // 3. Upload to storage
                 const { error: uploadError } = await _supabase.storage.from('avatars').upload(filePath, file, { upsert: true });
-                
                 if (uploadError) {
                     alert("Upload failed: " + uploadError.message);
-                    event.target.value = ''; // Reset the file input
+                    event.target.value = '';
                     return;
                 }
 
-                // 4. Generate URL and bust cache
                 const { data: { publicUrl } } = _supabase.storage.from('avatars').getPublicUrl(filePath);
                 const cacheBustedUrl = publicUrl + '?t=' + Date.now();
 
-                // 5. Update Database
                 const { error: dbError } = await _supabase.from('profiles').update({ 
                     avatar_url: cacheBustedUrl 
                 }).eq('id', user.id);
                 
                 if (dbError) {
                     alert("Database Error: " + dbError.message);
-                    event.target.value = ''; // Reset the file input
+                    event.target.value = '';
                     return;
                 }
                 
-                // 6. Success! Update UI and clear the file input so it can be used again
                 updateAvatarVisuals(cacheBustedUrl);
                 closeModal();
                 event.target.value = ''; 
-
             } catch (err) {
                 alert("Unexpected Javascript error: " + err.message);
             }
         }
 
         function updateAvatarVisuals(url) {
-            // Show the actual images
             ['profile-avatar-img', 'header-avatar'].forEach(id => { 
                 const el = document.getElementById(id); 
                 if(el) { el.src = url; el.classList.remove('hidden'); } 
             });
-            
-            // Hide the emoji placeholders
             ['profile-avatar-placeholder', 'header-avatar-emoji'].forEach(id => { 
                 const el = document.getElementById(id); 
                 if(el) el.classList.add('hidden'); 
             });
         }
+        
         async function handleDeleteAccount() {
             if(confirm("Are you sure? This will delete your profile data.")) {
                 const { data: { user } } = await _supabase.auth.getUser();
@@ -1034,8 +1112,6 @@
                     option.textContent = college.name;
                     collegeSelect.appendChild(option);
                 });
-            } else {
-                alert("The API connected, but the colleges table is completely empty.");
             }
         }
 
@@ -1123,8 +1199,103 @@
             }
         });
 
-        // This line runs the function on page load!
+        // Initialize Data on Load
         loadColleges(); 
+        
+        // ==========================================
+        // GIG BOARD LOGIC (Get it Written)
+        // ==========================================
+        const mockRequests = [
+            { id: '1', title: 'Data Structures Lab in C', notes: 'Need 10 array programs compiled with terminal output screenshots.', photo: 'https://via.placeholder.com/400x200?text=C+Programming', deadline: '2 days', status: 'open' },
+            { id: '2', title: 'Game Lore: Cyberpunk Faction', notes: 'Need a 2-page backstory for a mercenary faction in an open-world shooter.', photo: 'https://via.placeholder.com/400x200?text=Creative+Writing', deadline: '12 hours', status: 'in_progress', price: 250 },
+            { id: '3', title: 'History Mid-Term Essay', notes: 'Need 1500 words on the Industrial Revolution. Standard MLA format.', photo: 'https://via.placeholder.com/400x200?text=Essay+Format', deadline: '24 hours', status: 'review', price: 400 }
+        ];
+
+        function renderGigCards(requests) {
+            const openBoard = document.getElementById('gig-board');
+            const profileBoard = document.getElementById('profile-gigs-grid');
+            
+            if (openBoard) openBoard.innerHTML = ''; 
+            if (profileBoard) profileBoard.innerHTML = '';
+
+            let hasOpen = false;
+            let hasActive = false;
+
+            requests.forEach(req => {
+                // Determine color styling based on status
+                let cardStyles = "bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700";
+                let statusBadge = `<span class="px-2 py-1 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded text-xs font-bold transition-colors">Open for Bids</span>`;
+                let actionArea = `
+                    <div class="flex gap-2 mt-4">
+                        <input type="number" placeholder="₹ Price" class="w-full border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white rounded-lg px-3 py-1.5 text-sm outline-none focus:ring-2 focus:ring-primary transition-colors">
+                        <button onclick="handleAction('Bid Placed', 'Your bid has been submitted.')" class="bg-primary text-white font-bold px-4 py-1.5 rounded-lg text-sm hover:bg-dark transition-colors">Bid</button>
+                    </div>`;
+
+                if (req.status === 'in_progress') {
+                    cardStyles = "bg-red-50 dark:bg-red-900/20 border-red-500 shadow-sm";
+                    statusBadge = `<span class="px-2 py-1 bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-400 rounded text-xs font-bold transition-colors">In Progress</span>`;
+                    actionArea = `
+                        <div class="mt-4 flex justify-between items-center pt-2">
+                            <span class="font-bold text-red-700 dark:text-red-400">Agreed Price: ₹${req.price}</span>
+                            <button onclick="handleAction('Submit Delivery', 'Opening file upload for delivery...')" class="bg-red-600 text-white font-bold px-4 py-1.5 rounded-lg text-sm hover:bg-red-700 transition-colors">Submit Delivery</button>
+                        </div>`;
+                } else if (req.status === 'review') {
+                    cardStyles = "bg-yellow-50 dark:bg-yellow-900/20 border-yellow-500 shadow-sm";
+                    statusBadge = `<span class="px-2 py-1 bg-yellow-200 dark:bg-yellow-900/50 text-yellow-800 dark:text-yellow-400 rounded text-xs font-bold transition-colors">In Review</span>`;
+                    actionArea = `
+                        <div class="mt-4 flex justify-between items-center border-t border-yellow-300 dark:border-yellow-700 pt-3 transition-colors">
+                            <span class="text-sm font-bold text-yellow-800 dark:text-yellow-500">Time remaining: 23h 45m</span>
+                            <div class="flex gap-2">
+                                <button onclick="handleAction('Fix Requested', 'Notifying writer...')" class="bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold px-3 py-1.5 rounded-lg text-sm hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors">Request Fix</button>
+                                <button onclick="handleAction('Approved', 'Funds released to writer.')" class="bg-emerald-600 text-white font-bold px-3 py-1.5 rounded-lg text-sm hover:bg-emerald-700 transition-colors">Approve</button>
+                            </div>
+                        </div>`;
+                }
+
+                // Build the HTML Card
+                const cardHTML = `
+                    <div class="border rounded-xl overflow-hidden flex flex-col ${cardStyles} transition-colors duration-200">
+                        <div class="h-32 bg-slate-200 dark:bg-slate-700 w-full bg-cover bg-center transition-colors" style="background-image: url('${req.photo}')"></div>
+                        
+                        <div class="p-4 flex-1 flex flex-col">
+                            <div class="flex justify-between items-start mb-2 gap-2">
+                                <h3 class="font-bold text-lg text-slate-900 dark:text-white leading-tight">${req.title}</h3>
+                                ${statusBadge}
+                            </div>
+                            
+                            <p class="text-sm text-slate-600 dark:text-slate-400 mb-4 flex-1">${req.notes}</p>
+                            
+                            <div class="flex items-center text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
+                                <svg class="w-4 h-4 mr-1 text-slate-500 dark:text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                Deadline: ${req.deadline}
+                            </div>
+
+                            ${actionArea}
+                        </div>
+                    </div>
+                `;
+
+                if (req.status === 'open') {
+                    if (openBoard) openBoard.innerHTML += cardHTML;
+                    hasOpen = true;
+                } else {
+                    if (profileBoard) profileBoard.innerHTML += cardHTML;
+                    hasActive = true;
+                }
+            });
+
+            if (!hasOpen && openBoard) {
+                openBoard.innerHTML = '<p class="text-slate-500 dark:text-slate-400 text-sm">No open requests available right now.</p>';
+            }
+            if (!hasActive && profileBoard) {
+                profileBoard.innerHTML = '<p class="text-slate-500 dark:text-slate-400 text-sm">You have no active or accepted requests.</p>';
+            }
+        }
+
+        // Initialize the board when DOM loads
+        document.addEventListener('DOMContentLoaded', () => {
+            renderGigCards(mockRequests);
+        });
         
     </script>
 </body>
