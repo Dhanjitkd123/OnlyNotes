@@ -280,15 +280,15 @@
             </div>
         </main>
 
-        <!-- FOOTER (Moved outside main to dock at page bottom) -->
+        <!-- FOOTER -->
         <footer class="py-4 border-t border-slate-200 dark:border-slate-700 text-center w-full bg-white dark:bg-slate-800 transition-colors z-40 flex-shrink-0">
             <p class="text-sm text-slate-500 dark:text-slate-400 mb-1.5">© 2026 OnlyNotes™. All rights reserved.</p>
             <div class="flex justify-center items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-300">
-                <a href="https://dhanjitkd123.github.io/OnlyNotes/privacy.html" class="hover:text-primary dark:hover:text-primary transition-colors">Privacy Policy</a>
+                <a href="https://dhanjitkd123.github.io/OnlyNotes/privacy.html" target="_blank" rel="noopener noreferrer" class="hover:text-primary dark:hover:text-primary transition-colors">Privacy Policy</a>
                 <span class="text-slate-400 dark:text-slate-500">&middot;</span>
-                <a href="https://dhanjitkd123.github.io/OnlyNotes/terms.html" class="hover:text-primary dark:hover:text-primary transition-colors">Terms of Service</a>
+                <a href="https://dhanjitkd123.github.io/OnlyNotes/terms.html" target="_blank" rel="noopener noreferrer" class="hover:text-primary dark:hover:text-primary transition-colors">Terms of Service</a>
                 <span class="text-slate-400 dark:text-slate-500">&middot;</span>
-                <a href="https://dhanjitkd123.github.io/OnlyNotes/contact.html" class="hover:text-primary dark:hover:text-primary transition-colors">Contact</a>
+                <a href="https://dhanjitkd123.github.io/OnlyNotes/contact.html" target="_blank" rel="noopener noreferrer" class="hover:text-primary dark:hover:text-primary transition-colors">Contact</a>
             </div>
         </footer>
 
@@ -331,6 +331,18 @@
         </div>
     </div>
 
+    <!-- Cookie Consent Banner -->
+    <div id="consent-banner" class="fixed bottom-0 left-0 right-0 sm:bottom-6 sm:left-6 sm:right-auto sm:max-w-sm bg-white dark:bg-slate-800 shadow-2xl sm:rounded-2xl border-t sm:border border-slate-200 dark:border-slate-700 p-4 z-[60] hidden transition-colors">
+        <div class="flex flex-col sm:flex-row items-center gap-4">
+            <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed flex-1 text-center sm:text-left">
+                By using this site you agree to our 
+                <a href="https://dhanjitkd123.github.io/OnlyNotes/terms.html" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline font-semibold">Terms</a> and 
+                <a href="https://dhanjitkd123.github.io/OnlyNotes/privacy.html" target="_blank" rel="noopener noreferrer" class="text-primary hover:underline font-semibold">Privacy Policy</a>.
+            </p>
+            <button onclick="acceptConsent()" class="w-full sm:w-auto shrink-0 bg-primary hover:bg-dark text-white font-bold px-6 py-2 rounded-lg text-sm transition-colors shadow-sm">OK</button>
+        </div>
+    </div>
+
     <!-- Supabase Core Script -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
@@ -341,6 +353,20 @@
     </script>
 
     <script>
+        // ==========================================
+        // CONSENT BANNER LOGIC
+        // ==========================================
+        document.addEventListener("DOMContentLoaded", () => {
+            if (!localStorage.getItem('onlynotes_consent')) {
+                document.getElementById('consent-banner').classList.remove('hidden');
+            }
+        });
+
+        function acceptConsent() {
+            localStorage.setItem('onlynotes_consent', 'true');
+            document.getElementById('consent-banner').classList.add('hidden');
+        }
+
         // ==========================================
         // THEME TOGGLE LOGIC
         // ==========================================
@@ -370,6 +396,18 @@
                 }
                 updateIcons();
             });
+        });
+
+        // Sync theme changes across tabs in real-time
+        window.addEventListener('storage', (event) => {
+            if (event.key === 'color-theme') {
+                if (event.newValue === 'dark') {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
+                updateIcons();
+            }
         });
 
         // ==========================================
